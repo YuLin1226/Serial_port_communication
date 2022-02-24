@@ -6,25 +6,25 @@
 namespace Motor
 {
     // 建構元
-    SerialModbus::SerialModbus(const std::string _serial_port, const int _baud_rate) {
+    SerialModbus::SerialModbus(const std::string _serial_port, const int _baud_rate){
         set_param_serial(_serial_port, _baud_rate);
     }
     // 解構元：關閉port
-    SerialModbus::~SerialModbus() {
+    SerialModbus::~SerialModbus(){
         close();
     }
 
-    void SerialModbus::set_param_serial(const std::string _serial_port, const int _baud_rate) {
+    void SerialModbus::set_param_serial(const std::string _serial_port, const int _baud_rate){
         p_serial_port = _serial_port;
         p_baud_rate = _baud_rate;
     }
 
-    int SerialModbus::open() {
-        if(p_port != NULL) {
+    int SerialModbus::open(){
+        if(p_port != NULL){
             return -1;
         }
 
-        if(p_service) {
+        if(p_service){
             p_port.reset();
             p_service.reset();
         }
@@ -46,22 +46,55 @@ namespace Motor
             return 0;
         }
         catch (std::exception &ex){
-            std::cout<<"open exception : "<<ex.what()<<std::endl;
+            std::cout << "open exception : " << ex.what() << std::endl;
         }
     }
 
-    int SerialModbus::close() {
-        if(p_port && p_port->is_open()) {
+    int SerialModbus::close(){
+        if(p_port && p_port->is_open()){
              p_port->close();
         }           
     }
 
 
+    void SerialModbus::write(std::vector<char> _data){
+	    if (p_port->is_open()){
+            boost::mutex::scoped_lock lock(*p_mutex);
+            auto size = p_port->write_some(buffer(_data));
+            // std::cout << "Writen size: " << size << std::endl;
+            if(_data.size() != size){
+                throw "Write Size Error!!!";
+            }      
+        }
+        else
+        {
+            throw "Port not open";
+        }
+    }    
+    
+    void SerialModbus::single_register_write(uint8_t _id, uint8_t _function_code, uint16_t _addr, uint16_t _data)
+    {
+        // 建立資料的空陣列
+        std::vector<uint8_t> p_data;
+        p_data.clear();
+        // 存入 _id, _func, _addr, _data 等資訊
+        p_data.push_back(_id);
+        p_data.push_back(_function_code);
+        p_data.push_back(_addr >> 8);
+        p_data.push_back(_addr);
+        p_data.push_back(_data >> 8);
+        p_data.push_back(_data);
+        // 依照前面存入的資料計算 CRC 碼，並再次存入
+        uint16_t crc = this->calculate_crc(p_data);
+        p_data.push_back(crc >> 8);
+        p_data.push_back(crc);
+        
+        // 發送訊息
+        std::vector<char> p_char(p_data.begin(), p_data.end());
+        this->write(p_char);
+        // 後面可能需要去接受回覆，並且檢測CRC碼的動作，但目前先不加。
 
-
-
-
-
+    }
 
     /*
     ========================= 待刪除 =========================

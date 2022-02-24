@@ -48,6 +48,9 @@ namespace Motor
             int close();
 
 
+            void write(std::vector<char> _data);
+            void single_register_write(uint8_t _id, uint8_t _function_code, uint16_t _addr, uint16_t _data);
+
             /*
             ========================= 待刪除 =========================
             */
@@ -68,10 +71,9 @@ namespace Motor
         protected:
 
 
-            inline uint16_t calculate_crc(std::vector<uint16_t> _data, int len){ 
-
+            inline uint16_t calculate_crc(std::vector<uint8_t> _data){ 
                 uint16_t crc = 0xFFFF;  
-                for(auto idx=0; idx<len; idx++){
+                for(auto idx=0; idx<_data.size(); idx++){
                     crc ^= (uint16_t)_data[idx];
                     for(auto i=8; i!=0; i--){
 
@@ -169,4 +171,5 @@ namespace Motor
 
 
     };
+}// namespace: Motor
 #endif
