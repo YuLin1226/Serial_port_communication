@@ -56,9 +56,9 @@ namespace Motor
 
             void write(std::vector<char> _data);
             void single_register_write(uint8_t _id, uint8_t _function_code, uint16_t _addr, uint16_t _data);
-            std::vector<char> SerialModbus::asyncRead(size_t min_rcv);
-            void SerialModbus::readCallback(deadline_timer &timeout, const boost::system::error_code &error, std::size_t bytes_transferred);
-            void SerialModbus::timeoutCallback(serial_port &ser_port, const boost::system::error_code &error);
+            std::vector<char> asyncRead(size_t min_rcv);
+            void readCallback(deadline_timer &timeout, const boost::system::error_code &error, std::size_t bytes_transferred);
+            void timeoutCallback(serial_port &ser_port, const boost::system::error_code &error);
 
         protected:
             bool p_is_read_timeout;

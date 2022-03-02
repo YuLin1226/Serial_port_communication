@@ -8,10 +8,25 @@
 #include <thread>
 #include <boost/thread/mutex.hpp>
 
-std::shared_ptr<Motor::SerialModbus> p_motor{ new Motor::SerialModbus{"/dev/ttyUSB0",115200} };
+// std::shared_ptr<Motor::SerialModbus> p_motor{ new Motor::SerialModbus{"/dev/ttyUSB0",115200} };
+std::shared_ptr<Motor::SerialModbus> p_motor{ new Motor::SerialModbus{"/dev/pty/6",115200} };
 
 
 int main(int argc, char **argv)
 {
+    // 開啟通訊
+    p_motor->open();
+
+    uint8_t _ID = 0x01;
+    uint8_t _FC = 0x03;
+    uint16_t _ADDR = 0x0001;
+    uint16_t _DATA = 0x0001;
+
+    while(1){
+        p_motor->single_register_write(_ID, _FC, _ADDR, _DATA);
+        sleep(3);
+    }
+    // 關閉通訊
+    p_motor->close();
     return 0;
 }

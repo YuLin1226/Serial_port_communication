@@ -48,12 +48,16 @@ namespace Motor
         catch (std::exception &ex){
             std::cout << "open exception : " << ex.what() << std::endl;
         }
+        // 原本沒有return。
+        return 0;           
     }
 
     int SerialModbus::close(){
         if(p_port && p_port->is_open()){
              p_port->close();
-        }           
+        }
+        // 原本沒有return。
+        return 0;           
     }
 
 
