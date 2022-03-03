@@ -43,6 +43,7 @@ namespace Motor
             std::shared_ptr<boost::mutex> p_func_mutex;
             std::string p_serial_port;
             int p_baud_rate;
+            std::mutex p_std_mutex;
 
         public:
             SerialModbus(const std::string _serial_port, const int _baud_rate);
@@ -59,6 +60,9 @@ namespace Motor
             std::vector<char> asyncRead(size_t min_rcv);
             void readCallback(deadline_timer &timeout, const boost::system::error_code &error, std::size_t bytes_transferred);
             void timeoutCallback(serial_port &ser_port, const boost::system::error_code &error);
+
+            void writeOnly(uint8_t _ID, uint8_t _FC, uint16_t _ADDR, uint16_t _DATA);
+            std::vector<char> read_and_write(uint8_t _ID, uint8_t _FC, uint16_t _ADDR, uint16_t _DATA, int expected_bytes);
 
         protected:
             bool p_is_read_timeout;

@@ -170,6 +170,45 @@ namespace Motor
         std::cerr << "Read timeout" << std::endl;
     }
 
+    void SerialModbus::writeOnly(uint8_t _ID, uint8_t _FC, uint16_t _ADDR, uint16_t _DATA){
+        const std::lock_guard<std::mutex> lock(p_std_mutex);
+        try
+        {
+            single_register_write(_ID, _FC, _ADDR, _DATA);
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+        }
+    }
+
+    std::vector<char> SerialModbus::read_and_write(uint8_t _ID, uint8_t _FC, uint16_t _ADDR, uint16_t _DATA, int expected_bytes){
+        // 寫入
+        const std::lock_guard<std::mutex> lock(p_std_mutex);
+        try
+        {
+            single_register_write(_ID, _FC, _ADDR, _DATA);
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+        }
+        // 讀取
+        std::vector<char> response;
+        {
+            usleep(RESPONSE_DELAY_US);
+            try
+            {
+                response = asyncRead(expected_bytes);
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+        }
+        return response;
+    }
+
 
 
 
