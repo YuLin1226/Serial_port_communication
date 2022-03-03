@@ -32,6 +32,7 @@ namespace Motor
         p_mutex = std::shared_ptr<boost::mutex>{new boost::mutex};
         p_service = std::shared_ptr<io_service>{new io_service()};
         p_port = std::shared_ptr<serial_port>{ new serial_port(*p_service) };
+        p_timeout = std::shared_ptr<deadline_timer>{new deadline_timer(*p_service)};
 
         try 
         {
@@ -105,24 +106,29 @@ namespace Motor
     {
         p_service->reset();
         p_is_read_timeout = false;
-        std::vector<char> p_char(min_rcv);
         p_available = false;
+        std::vector<char> p_char(min_rcv);
         try
         {
             boost::mutex::scoped_lock sl(*p_mutex);
             // 呼叫readCallback (基本上 error=false，除非讀完了或者真的有錯誤。)
-            async_read(*p_port, boost::asio::buffer(p_char, min_rcv),
-                            boost::bind(&SerialModbus::readCallback,
-                                        this,
-                                        boost::ref(*p_timeout),
-                                        boost::asio::placeholders::error,
-                                        boost::asio::placeholders::bytes_transferred));
-
+            async_read( *p_port, 
+                        boost::asio::buffer(p_char, min_rcv),
+                        boost::bind(&SerialModbus::readCallback,
+                                    this,
+                                    boost::ref(*p_timeout),
+                                    boost::asio::placeholders::error,
+                                    boost::asio::placeholders::bytes_transferred
+                                    )
+                        );
             p_timeout->expires_from_now(boost::posix_time::millisec(READ_TIME_OUT_MS));
-            // 呼叫timeoutCallback (error=true，觸發timer或者取消timer)
-            p_timeout->async_wait(boost::bind(&SerialModbus::timeoutCallback, this,
-                                      boost::ref(*p_port),
-                                      boost::asio::placeholders::error));
+            // // 呼叫timeoutCallback (error=true，觸發timer或者取消timer)
+            p_timeout->async_wait(boost::bind(  &SerialModbus::timeoutCallback, 
+                                                this,
+                                                boost::ref(*p_port),
+                                                boost::asio::placeholders::error
+                                                )
+                                );
             // Blocks until async callbacks are finished
             p_service->run(); 
             
@@ -184,15 +190,7 @@ namespace Motor
 
     std::vector<char> SerialModbus::read_and_write(uint8_t _ID, uint8_t _FC, uint16_t _ADDR, uint16_t _DATA, int expected_bytes){
         // 寫入
-        const std::lock_guard<std::mutex> lock(p_std_mutex);
-        try
-        {
-            single_register_write(_ID, _FC, _ADDR, _DATA);
-        }
-        catch(const std::exception& e)
-        {
-            std::cerr << e.what() << '\n';
-        }
+        writeOnly(_ID, _FC, _ADDR, _DATA);
         // 讀取
         std::vector<char> response;
         {

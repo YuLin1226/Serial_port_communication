@@ -9,7 +9,7 @@
 #include <boost/thread/mutex.hpp>
 
 // std::shared_ptr<Motor::SerialModbus> p_motor{ new Motor::SerialModbus{"/dev/ttyUSB0",115200} };
-std::shared_ptr<Motor::SerialModbus> p_motor{ new Motor::SerialModbus{"/dev/pts/6",115200} };
+std::shared_ptr<Motor::SerialModbus> p_motor{ new Motor::SerialModbus{"/dev/pts/6", 115200} };
 
 
 int main(int argc, char **argv)
@@ -25,15 +25,20 @@ int main(int argc, char **argv)
     int expected_bytes = 10;
 
     while(1){
-        p_motor->writeOnly(_ID, _FC, _ADDR, _DATA);
+        try
+        {
+            // p_motor->writeOnly(_ID, _FC, _ADDR, _DATA);
+            std::vector<char> resp = p_motor->read_and_write(_ID, _FC, _ADDR, _DATA, expected_bytes);
+            for(auto i=0; i<resp.size(); i++){
+                std::cout << std::hex << resp[i] << std::endl;
+            }
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+        }
         sleep(3);
     }
-
-
-
-
-
-
 
     // 關閉通訊
     p_motor->close();
