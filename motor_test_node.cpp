@@ -9,7 +9,7 @@
 #include <boost/thread/mutex.hpp>
 
 // std::shared_ptr<Motor::SerialModbus> p_motor{ new Motor::SerialModbus{"/dev/ttyUSB0",115200} };
-std::shared_ptr<Motor::SerialModbus> p_motor{ new Motor::SerialModbus{"/dev/pts/6", 115200} };
+std::shared_ptr<Motor::SerialModbus> p_motor{ new Motor::SerialModbus{"/dev/pts/7", 115200} };
 
 
 int main(int argc, char **argv)
@@ -22,16 +22,24 @@ int main(int argc, char **argv)
     uint16_t _ADDR = 0x0001;
     uint16_t _DATA = 0x0001;
     int RESPONSE_DELAY_US = 1500;
-    int expected_bytes = 10;
+    int expected_bytes = 6;
 
     while(1){
         try
         {
             // p_motor->writeOnly(_ID, _FC, _ADDR, _DATA);
             std::vector<char> resp = p_motor->read_and_write(_ID, _FC, _ADDR, _DATA, expected_bytes);
-            for(auto i=0; i<resp.size(); i++){
-                std::cout << std::hex << resp[i] << std::endl;
+            // for(auto i=0; i<resp.size(); i++){
+            //     std::cout << std::hex << resp[i] << std::endl;
+            // }
+            for(auto i=0;i<resp.size();i++){
+                printf("resp[%i] = ", i);
+                std::bitset<8> x(resp[i]);
+                std::cout << x << std::endl;
             }
+
+            std::cout << std::endl << "===================" << std::endl;
+
         }
         catch(const std::exception& e)
         {

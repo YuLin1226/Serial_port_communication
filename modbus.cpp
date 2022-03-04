@@ -137,7 +137,6 @@ namespace Motor
         {
             std::cout << "Read exception. " << ex.what() << std::endl;
         }
-        // printf("expected size: %d, received size: %d\n", min_rcv, p_char.size());
         
         if (p_available)
         {
@@ -190,7 +189,7 @@ namespace Motor
 
     std::vector<char> SerialModbus::read_and_write(uint8_t _ID, uint8_t _FC, uint16_t _ADDR, uint16_t _DATA, int expected_bytes){
         // 寫入
-        writeOnly(_ID, _FC, _ADDR, _DATA);
+        // writeOnly(_ID, _FC, _ADDR, _DATA);
         // 讀取
         std::vector<char> response;
         {
