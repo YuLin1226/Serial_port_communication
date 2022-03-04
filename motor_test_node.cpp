@@ -12,8 +12,7 @@
 
 int main(int argc, char **argv)
 {
-    // std::shared_ptr<Motor::SerialModbus> p_motor{ new Motor::SerialModbus{"/dev/ttyUSB0",115200} };
-    std::shared_ptr<Motor::SerialModbus> p_motor{ new Motor::SerialModbus{argc > 1 ? argv[1] : "/dev/pts/8", 115200} };
+    std::shared_ptr<Motor::SerialModbus> p_motor = std::make_shared<Motor::SerialModbus>(argc > 1 ? argv[1] : "/dev/pts/8", 115200);
 
     // 開啟通訊
     p_motor->open();

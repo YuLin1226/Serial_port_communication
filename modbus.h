@@ -30,7 +30,7 @@ namespace Motor
             SerialModbus(const std::string _serial_port, const int _baud_rate);
             virtual ~SerialModbus();
 
-            void set_param_serial(const std::string _serial_port, const int _baud_rate);
+            void set_SerialPort_Param(const std::string _serial_port, const int _baud_rate);
             int open();
             int close();
 
@@ -41,9 +41,6 @@ namespace Motor
             
 
         protected:
-            /*
-            shared_ptr 是C++11提供的一種智能指針類，可以在任何地方都不使用時自動刪除相關指針，從而幫助徹底消除內存泄漏和懸空指針的問題。
-            */
             std::shared_ptr<io_service> p_service;
             std::shared_ptr<serial_port> p_port;
             std::shared_ptr<boost::mutex> p_mutex;

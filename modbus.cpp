@@ -5,14 +5,14 @@
 namespace Motor
 {
     SerialModbus::SerialModbus(const std::string _serial_port, const int _baud_rate){
-        set_param_serial(_serial_port, _baud_rate);
+        set_SerialPort_Param(_serial_port, _baud_rate);
     }
     
     SerialModbus::~SerialModbus(){
         close();
     }
 
-    void SerialModbus::set_param_serial(const std::string _serial_port, const int _baud_rate){
+    void SerialModbus::set_SerialPort_Param(const std::string _serial_port, const int _baud_rate){
         p_serial_port = _serial_port;
         p_baud_rate = _baud_rate;
     }
