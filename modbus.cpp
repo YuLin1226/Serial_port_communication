@@ -105,7 +105,6 @@ namespace Motor
     std::vector<char> SerialModbus::asyncRead(size_t rcv_size)
     {
         p_service->reset();
-        p_is_read_timeout = false;
         p_available = false;
         std::vector<char> p_char(rcv_size);
         try
@@ -142,14 +141,12 @@ namespace Motor
                                     {
                                         if (!error)
                                         {
-                                            p_is_read_timeout = true;
                                             p_available = false;
                                             p_port->cancel(); 
                                             std::cerr << "Read timeout" << std::endl;
                                         }
                                     });
             p_service->run(); 
-            
         }
         catch(const std::exception& ex)
         {

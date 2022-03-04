@@ -63,7 +63,6 @@ namespace Motor
             std::vector<char> read_and_write(uint8_t _ID, uint8_t _FC, uint16_t _ADDR, uint16_t _DATA, int expected_bytes);
 
         protected:
-            bool p_is_read_timeout;
             bool p_available;
             std::shared_ptr<deadline_timer> p_timeout;
 
