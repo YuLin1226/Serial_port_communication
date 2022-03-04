@@ -102,34 +102,52 @@ namespace Motor
     }
 
     // min_rcv 規定讀取字節，照規格書上寫的去設定。
-    std::vector<char> SerialModbus::asyncRead(size_t min_rcv)
+    std::vector<char> SerialModbus::asyncRead(size_t rcv_size)
     {
         p_service->reset();
         p_is_read_timeout = false;
         p_available = false;
-        std::vector<char> p_char(min_rcv);
+        std::vector<char> p_char(rcv_size);
         try
         {
+            /* =============================== 邏輯解釋 ===============================
+                * scoped_lock 用於保護線程。
+                * async_read 用於異步讀取資料，並且讀取到 "rcv_size" 長度的字節才會呼叫Lambda表達式，即讀取完畢。
+                *   1) 讀取完畢的error_code  = 0 (False)
+                * timeout expires_from_now 設定時間。
+                * timeout async_wait 等待已設定的時間，其呼叫 Lambda 有兩種情況：
+                *   1) 過期，此時error_code  = 0 (False)
+                *   2) 取消，此時error_code != 0 (True)
+                * service_run 阻塞後續工作，等待線程內的事項結束。
+                ---------------------------------------------------------------------
+                1-1) 讀取 -> 成功 -> 取消定時器 -> 定時器不做事。
+                1-2) 讀取 -> 失敗 -> 拋出錯誤
+                2-1) 定時器 -> 過期 -> 取消序列埠工作 -> 拋出錯誤              
+               =============================== 邏輯解釋 ===============================*/
             boost::mutex::scoped_lock sl(*p_mutex);
-            // 呼叫readCallback (基本上 error=false，除非讀完了或者真的有錯誤。)
             async_read( *p_port, 
-                        boost::asio::buffer(p_char, min_rcv),
-                        boost::bind(&SerialModbus::readCallback,
-                                    this,
-                                    boost::ref(*p_timeout),
-                                    boost::asio::placeholders::error,
-                                    boost::asio::placeholders::bytes_transferred
-                                    )
-                        );
+                        boost::asio::buffer(p_char, rcv_size),
+                        [&](const boost::system::error_code &error, std::size_t bytes_transferred)
+                        {
+                            if (error)
+                            {
+                                p_available = false;
+                                std::cerr << "readCallback Error " << error << std::endl;
+                            }
+                            p_timeout->cancel();
+                            p_available = true;
+                        });
             p_timeout->expires_from_now(boost::posix_time::millisec(READ_TIME_OUT_MS));
-            // // 呼叫timeoutCallback (error=true，觸發timer或者取消timer)
-            p_timeout->async_wait(boost::bind(  &SerialModbus::timeoutCallback, 
-                                                this,
-                                                boost::ref(*p_port),
-                                                boost::asio::placeholders::error
-                                                )
-                                );
-            // Blocks until async callbacks are finished
+            p_timeout->async_wait(  [&](const boost::system::error_code &error)
+                                    {
+                                        if (!error)
+                                        {
+                                            p_is_read_timeout = true;
+                                            p_available = false;
+                                            p_port->cancel(); 
+                                            std::cerr << "Read timeout" << std::endl;
+                                        }
+                                    });
             p_service->run(); 
             
         }
@@ -146,33 +164,6 @@ namespace Motor
         {
             throw "Serial port reading timeout";
         }
-    }
-
-    void SerialModbus::readCallback(deadline_timer &timeout, const boost::system::error_code &error, std::size_t bytes_transferred)
-    {
-        if (error)
-        {
-            p_available = false;
-            std::cerr << "readCallback Error " << error << std::endl;
-            return;
-        }
-        
-        // timer.cancel() 觸發timeoutCallback，並且error = true。
-        timeout.cancel();
-        p_available = true;
-    }
-
-    void SerialModbus::timeoutCallback(serial_port &ser_port, const boost::system::error_code &error)
-    {
-        if (error) // Read callback completed
-        {
-            return;
-        }
-        p_is_read_timeout = true;
-        p_available = false;
-        // serial_port.cancel() 觸發readCallback，並且error = true。
-        ser_port.cancel(); 
-        std::cerr << "Read timeout" << std::endl;
     }
 
     void SerialModbus::writeOnly(uint8_t _ID, uint8_t _FC, uint16_t _ADDR, uint16_t _DATA){
