@@ -13,24 +13,24 @@ namespace Motor
     }
 
     void SerialModbus::set_SerialPort_Param(const std::string _serial_port, const int _baud_rate){
-        p_serial_port = _serial_port;
-        p_baud_rate = _baud_rate;
+        p_serial_port   = _serial_port;
+        p_baud_rate     = _baud_rate;
     }
 
     int SerialModbus::open(){
-        if(p_port != NULL){
+        if(p_port != NULL)
+        {
             return -1;
         }
-
-        if(p_service){
+        if(p_service)
+        {
             p_port.reset();
             p_service.reset();
         }
-            
-        p_mutex = std::shared_ptr<boost::mutex>{new boost::mutex};
-        p_service = std::shared_ptr<io_service>{new io_service()};
-        p_port = std::shared_ptr<serial_port>{ new serial_port(*p_service) };
-        p_timeout = std::shared_ptr<deadline_timer>{new deadline_timer(*p_service)};
+        p_mutex     = std::shared_ptr<boost::mutex>{new boost::mutex};
+        p_service   = std::shared_ptr<io_service>{new io_service()};
+        p_port      = std::shared_ptr<serial_port>{ new serial_port(*p_service) };
+        p_timeout   = std::shared_ptr<deadline_timer>{new deadline_timer(*p_service)};
 
         try 
         {
@@ -48,17 +48,20 @@ namespace Motor
     }
 
     int SerialModbus::close(){
-        if(p_port && p_port->is_open()){
-             p_port->close();
+        if(p_port && p_port->is_open())
+        {
+            p_port->close();
         }
         return 0;           
     }
 
     void SerialModbus::write(std::vector<char> _data){
-	    if (p_port->is_open()){
+	    if (p_port->is_open())
+        {
             boost::mutex::scoped_lock lock(*p_mutex);
             auto size = p_port->write_some(buffer(_data));
-            if(_data.size() != size){
+            if(_data.size() != size)
+            {
                 throw "Write Size Error.";
             }      
         }
