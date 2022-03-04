@@ -28,19 +28,14 @@ int main(int argc, char **argv)
     while(1){
         try
         {
-            // p_motor->writeOnly(_ID, _FC, _ADDR, _DATA);
             std::vector<char> resp = p_motor->read_and_write(_ID, _FC, _ADDR, _DATA, expected_bytes);
-            // for(auto i=0; i<resp.size(); i++){
-            //     std::cout << std::hex << resp[i] << std::endl;
-            // }
+            std::cout << std::endl << "========== Data Received. Binary Below. ==========" << std::endl;
             for(auto i=0;i<resp.size();i++){
                 printf("resp[%i] = ", i);
                 std::bitset<8> x(resp[i]);
                 std::cout << x << std::endl;
             }
-
-            std::cout << std::endl << "===================" << std::endl;
-
+            
         }
         catch(const std::exception& e)
         {

@@ -7,6 +7,7 @@ namespace Motor
     SerialModbus::SerialModbus(const std::string _serial_port, const int _baud_rate){
         set_param_serial(_serial_port, _baud_rate);
     }
+    
     SerialModbus::~SerialModbus(){
         close();
     }
@@ -53,7 +54,6 @@ namespace Motor
         return 0;           
     }
 
-
     void SerialModbus::write(std::vector<char> _data){
 	    if (p_port->is_open()){
             boost::mutex::scoped_lock lock(*p_mutex);
@@ -91,7 +91,6 @@ namespace Motor
         this->write(p_char);
     }
 
-    // min_rcv 規定讀取字節，照規格書上寫的去設定。
     std::vector<char> SerialModbus::asyncRead(size_t rcv_size)
     {
         p_service->reset();
@@ -153,9 +152,9 @@ namespace Motor
     }
 
     std::vector<char> SerialModbus::read_and_write(uint8_t _ID, uint8_t _FC, uint16_t _ADDR, uint16_t _DATA, int expected_bytes){
-        // 寫入
-        // writeOnly(_ID, _FC, _ADDR, _DATA);
-        // 讀取
+    
+        /* 這個功能之後會作為特定函數的模板，例如：get_MotorSpeed，那就是先寫入再讀取 */
+        write_to_single_register(_ID, _FC, _ADDR, _DATA);    
         std::vector<char> response;
         {
             usleep(RESPONSE_DELAY_US);
