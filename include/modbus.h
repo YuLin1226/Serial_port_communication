@@ -11,6 +11,8 @@
 #define __DEBUG__ false
 #endif
 
+#ifndef MODBUS_H
+#define MODBUS_H
 
 
 using namespace boost::asio;
@@ -85,3 +87,5 @@ namespace Motor
 
     };
 }
+
+#endif

@@ -1,6 +1,7 @@
 #include "modbus.h"
 
-
+#ifndef MOTOR_DRIVER_H
+#define MOTOR_DRIVER_H
 
 
 namespace Motor
@@ -10,10 +11,10 @@ namespace Motor
     private:
         std::shared_ptr<boost::mutex> p_func_mutex;
 
-        const uint8_t Broadcast         =  0;
-        const uint8_t MOTOR_ID          =  1;
-        const uint8_t FC_SetMotorSpeed  = 41;
-        const uint8_t CMD_JG            =  1;
+        const uint8_t Broadcast         =  0x00;
+        const uint8_t MOTOR_ID          =  0x01;
+        const uint8_t FC_SetMotorSpeed  =  0x41;
+        const uint8_t CMD_JG            =  0x01;
 
 
     public:
@@ -30,3 +31,5 @@ namespace Motor
 
     };
 } // namespace Motor
+
+#endif
