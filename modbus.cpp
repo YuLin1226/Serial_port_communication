@@ -4,7 +4,8 @@
 
 namespace Motor
 {
-    SerialModbus::SerialModbus(const std::string _serial_port, const int _baud_rate){
+    SerialModbus::SerialModbus( const std::string _serial_port = "/dev/ttyUSB0",
+                                const int _baud_rate = 115200){
         set_SerialPort_Param(_serial_port, _baud_rate);
     }
     
