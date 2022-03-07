@@ -2,6 +2,7 @@
 // #include <ros/ros.h>
 // #include <std_msgs/Float64.h>
 #include "include/modbus.h"
+#include "include/motor_driver.h"
 #include <iostream>
 #include <string>
 #include <memory>
