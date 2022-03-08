@@ -41,6 +41,7 @@ namespace Motor
             p_port->set_option(serial_port_base::character_size(8));
             p_port->set_option(serial_port_base::parity(serial_port_base::parity::none));
             p_port->set_option(serial_port_base::stop_bits(serial_port_base::stop_bits::one));
+            std::cout << "Serial Connect." << std::endl;
         }
         catch (std::exception &ex){
             std::cout << "Open Exception : " << ex.what() << std::endl;
@@ -53,6 +54,7 @@ namespace Motor
         {
             p_port->close();
         }
+        std::cout << "Serial Disconnect." << std::endl;
         return 0;           
     }
 
