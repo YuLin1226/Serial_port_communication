@@ -127,11 +127,176 @@ namespace Motor{
         std::vector<char> p_char(p_data.begin(), p_data.end());
         this->write(p_char);
 
+        std::cout <<  "Send FREE Command: ";
+        for(auto i=0;i<p_char.size();i++){            
+            std::cout << std::hex << (int)p_data[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    void MotorDriver::SVON(bool is_echo = false){
+
+        std::vector<uint8_t> p_data;
+        uint8_t _num = 0x01;
+        uint8_t _cmd = is_echo ? this->CMD_SVON_Echo : this->CMD_SVON_No_Echo;
+        unionType _data_1, _data_2;
+        _data_1._data = 0x00;
+        _data_2._data = 0x00;
+
+        p_data.clear();
+        p_data.push_back(this->Broadcast);
+        p_data.push_back(this->FC_MasterSendCMD);
+        p_data.push_back(_num);
+        p_data.push_back(this->MOTOR_ID);
+        p_data.push_back(_cmd);
+        p_data.push_back(_data_1._data_byte[1]);
+        p_data.push_back(_data_1._data_byte[0]);
+        p_data.push_back(_data_2._data_byte[1]);
+        p_data.push_back(_data_2._data_byte[0]);
+        uint16_t crc = this->calculate_CRC(p_data);
+        p_data.push_back(crc);
+        p_data.push_back(crc >> 8);
+        std::vector<char> p_char(p_data.begin(), p_data.end());
+        this->write(p_char);
+
+        std::cout <<  "Send SVON Command: ";
+        for(auto i=0;i<p_char.size();i++){            
+            std::cout << std::hex << (int)p_data[i] << " ";
+        }
+        std::cout << std::endl;
+
+    }
+
+    void MotorDriver::CS(uint16_t _index, uint16_t _step, bool is_echo = false){
+        
+        std::vector<uint8_t> p_data;
+        uint8_t _num = 0x01;
+        uint8_t _cmd = is_echo ? this->CMD_FREE_Echo : this->CMD_FREE_No_Echo;
+        unionType _data_1, _data_2;
+        _data_1._data = _index;
+        _data_2._data = _step;
+
+        p_data.clear();
+        p_data.push_back(this->Broadcast);
+        p_data.push_back(this->FC_MasterSendCMD);
+        p_data.push_back(_num);
+        p_data.push_back(this->MOTOR_ID);
+        p_data.push_back(_cmd);
+        p_data.push_back(_data_1._data_byte[1]);
+        p_data.push_back(_data_1._data_byte[0]);
+        p_data.push_back(_data_2._data_byte[1]);
+        p_data.push_back(_data_2._data_byte[0]);
+        uint16_t crc = this->calculate_CRC(p_data);
+        p_data.push_back(crc);
+        p_data.push_back(crc >> 8);
+        std::vector<char> p_char(p_data.begin(), p_data.end());
+        this->write(p_char);
+
         std::cout <<  "Send Free Command: ";
         for(auto i=0;i<p_char.size();i++){            
             std::cout << std::hex << (int)p_data[i] << " ";
         }
         std::cout << std::endl;
+
+    }
+
+    void MotorDriver::CMR(uint16_t _index, uint16_t _step, bool is_echo = false){
+        
+        std::vector<uint8_t> p_data;
+        uint8_t _num = 0x01;
+        uint8_t _cmd = is_echo ? this->CMD_FREE_Echo : this->CMD_FREE_No_Echo;
+        unionType _data_1, _data_2;
+        _data_1._data = _index;
+        _data_2._data = _step;
+
+        p_data.clear();
+        p_data.push_back(this->Broadcast);
+        p_data.push_back(this->FC_MasterSendCMD);
+        p_data.push_back(_num);
+        p_data.push_back(this->MOTOR_ID);
+        p_data.push_back(_cmd);
+        p_data.push_back(_data_1._data_byte[1]);
+        p_data.push_back(_data_1._data_byte[0]);
+        p_data.push_back(_data_2._data_byte[1]);
+        p_data.push_back(_data_2._data_byte[0]);
+        uint16_t crc = this->calculate_CRC(p_data);
+        p_data.push_back(crc);
+        p_data.push_back(crc >> 8);
+        std::vector<char> p_char(p_data.begin(), p_data.end());
+        this->write(p_char);
+
+        std::cout <<  "Send Free Command: ";
+        for(auto i=0;i<p_char.size();i++){            
+            std::cout << std::hex << (int)p_data[i] << " ";
+        }
+        std::cout << std::endl;
+
+    }
+
+    void MotorDriver::CMA(uint16_t _index, uint16_t _step, bool is_echo = false){
+        
+        std::vector<uint8_t> p_data;
+        uint8_t _num = 0x01;
+        uint8_t _cmd = is_echo ? this->CMD_FREE_Echo : this->CMD_FREE_No_Echo;
+        unionType _data_1, _data_2;
+        _data_1._data = _index;
+        _data_2._data = _step;
+
+        p_data.clear();
+        p_data.push_back(this->Broadcast);
+        p_data.push_back(this->FC_MasterSendCMD);
+        p_data.push_back(_num);
+        p_data.push_back(this->MOTOR_ID);
+        p_data.push_back(_cmd);
+        p_data.push_back(_data_1._data_byte[1]);
+        p_data.push_back(_data_1._data_byte[0]);
+        p_data.push_back(_data_2._data_byte[1]);
+        p_data.push_back(_data_2._data_byte[0]);
+        uint16_t crc = this->calculate_CRC(p_data);
+        p_data.push_back(crc);
+        p_data.push_back(crc >> 8);
+        std::vector<char> p_char(p_data.begin(), p_data.end());
+        this->write(p_char);
+
+        std::cout <<  "Send Free Command: ";
+        for(auto i=0;i<p_char.size();i++){            
+            std::cout << std::hex << (int)p_data[i] << " ";
+        }
+        std::cout << std::endl;
+
+    }
+
+    void MotorDriver::NULL_TO_ECHO(bool is_echo = false){
+        
+        std::vector<uint8_t> p_data;
+        uint8_t _num = 0x01;
+        uint8_t _cmd = is_echo ? this->CMD_FREE_Echo : this->CMD_FREE_No_Echo;
+        unionType _data_1, _data_2;
+        _data_1._data = 0x00;
+        _data_2._data = 0x00;
+
+        p_data.clear();
+        p_data.push_back(this->Broadcast);
+        p_data.push_back(this->FC_MasterSendCMD);
+        p_data.push_back(_num);
+        p_data.push_back(this->MOTOR_ID);
+        p_data.push_back(_cmd);
+        p_data.push_back(_data_1._data_byte[1]);
+        p_data.push_back(_data_1._data_byte[0]);
+        p_data.push_back(_data_2._data_byte[1]);
+        p_data.push_back(_data_2._data_byte[0]);
+        uint16_t crc = this->calculate_CRC(p_data);
+        p_data.push_back(crc);
+        p_data.push_back(crc >> 8);
+        std::vector<char> p_char(p_data.begin(), p_data.end());
+        this->write(p_char);
+
+        std::cout <<  "Send Free Command: ";
+        for(auto i=0;i<p_char.size();i++){            
+            std::cout << std::hex << (int)p_data[i] << " ";
+        }
+        std::cout << std::endl;
+
     }
 
 

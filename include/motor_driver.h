@@ -31,8 +31,11 @@ namespace Motor
         void JG(uint16_t _cmd_rpm, bool is_echo);
         void ISTOP(bool is_echo);
         void FREE(bool is_echo);
-
-
+        void SVON(bool is_echo);
+        void CS(uint16_t _index, uint16_t _step, bool is_echo);
+        void CMR(uint16_t _index, uint16_t _step, bool is_echo);
+        void CMA(uint16_t _index, uint16_t _step, bool is_echo);
+        void NULL_TO_ECHO(bool is_echo);
 
     
 
