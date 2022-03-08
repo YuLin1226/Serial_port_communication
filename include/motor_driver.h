@@ -23,6 +23,8 @@ namespace Motor
         const uint8_t CMD_SVON_Echo     = 0x06;
         const uint8_t CMD_SVON_No_Echo  = 0x6A;
 
+        const int rcv_size              =    8;
+
 
     public:
         MotorDriver(const std::string _serial_port, const int _baud_rate);

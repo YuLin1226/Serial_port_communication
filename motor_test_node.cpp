@@ -23,7 +23,8 @@ int main(int argc, char **argv)
     if(true){
         try
         {
-            p_motor -> JG(300, false);
+            // p_motor -> JG(300, false);
+            p_motor -> NULL_TO_ECHO(true);
             sleep(5);
             // p_motor -> SetMotorSpeed_RPM(0, false);
         }

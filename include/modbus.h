@@ -21,7 +21,7 @@ namespace Motor
 {
     const int FAIL_READ_MAX_COUNT = 5;
     const int RESPONSE_DELAY_US = 1500; // Default 3300 300us(C3.5) + 3ms(Tb2)
-    const int64_t READ_TIME_OUT_MS = 500; // 100ms for timeout
+    const int64_t READ_TIME_OUT_MS = 100; // 100ms for timeout
     const int16_t MAX_ENC_DELTA = 4096;
     const int16_t HALF_MAX_ENC_DELTA = 2048;
     const int16_t ENC_RESOLUTION = 4096;

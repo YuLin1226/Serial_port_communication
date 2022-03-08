@@ -206,7 +206,7 @@ namespace Motor{
         std::vector<char> p_char(p_data.begin(), p_data.end());
         this->write(p_char);
 
-        std::cout <<  "Send Free Command: ";
+        std::cout <<  "Send CS Command: ";
         for(auto i=0;i<p_char.size();i++){            
             std::cout << std::hex << (int)p_data[i] << " ";
         }
@@ -243,7 +243,7 @@ namespace Motor{
         std::vector<char> p_char(p_data.begin(), p_data.end());
         this->write(p_char);
 
-        std::cout <<  "Send Free Command: ";
+        std::cout <<  "Send CMR Command: ";
         for(auto i=0;i<p_char.size();i++){            
             std::cout << std::hex << (int)p_data[i] << " ";
         }
@@ -280,7 +280,7 @@ namespace Motor{
         std::vector<char> p_char(p_data.begin(), p_data.end());
         this->write(p_char);
 
-        std::cout <<  "Send Free Command: ";
+        std::cout <<  "Send CMA Command: ";
         for(auto i=0;i<p_char.size();i++){            
             std::cout << std::hex << (int)p_data[i] << " ";
         }
@@ -317,12 +317,36 @@ namespace Motor{
         std::vector<char> p_char(p_data.begin(), p_data.end());
         this->write(p_char);
 
-        std::cout <<  "Send Free Command: ";
+        std::cout <<  "Send NULL Command: ";
         for(auto i=0;i<p_char.size();i++){            
             std::cout << std::hex << (int)p_data[i] << " ";
         }
         std::cout << std::endl;
 
+        if(is_echo){
+
+            std::vector<char> rcv_char;
+            
+            {
+                usleep(RESPONSE_DELAY_US);
+                try
+                {
+                    rcv_char = asyncRead(this->rcv_size);
+                }
+                catch(const std::exception& e)
+                {
+                    std::cerr << e.what() << '\n';
+                }
+                std::cout <<  "Received Data: ";
+                for(auto i=0;i<rcv_char.size();i++){            
+                    uint8_t a = rcv_char[i];
+                    std::cout << std::hex << +a << " ";
+                }
+                std::cout << std::endl;
+                
+            }
+
+        }
     }
 
 
