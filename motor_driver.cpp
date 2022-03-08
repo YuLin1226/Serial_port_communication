@@ -185,7 +185,7 @@ namespace Motor{
 
         std::vector<uint8_t> p_data;
         uint8_t _num = 0x01;
-        uint8_t _cmd = is_echo ? this->CMD_FREE_Echo : this->CMD_FREE_No_Echo;
+        uint8_t _cmd = is_echo ? this->CMD_CS_Echo : this->CMD_CS_No_Echo;
         unionType _data_1, _data_2;
         _data_1._data = _index;
         _data_2._data = _step;
@@ -222,7 +222,7 @@ namespace Motor{
 
         std::vector<uint8_t> p_data;
         uint8_t _num = 0x01;
-        uint8_t _cmd = is_echo ? this->CMD_FREE_Echo : this->CMD_FREE_No_Echo;
+        uint8_t _cmd = is_echo ? this->CMD_CMR_Echo : this->CMD_CMR_No_Echo;
         unionType _data_1, _data_2;
         _data_1._data = _index;
         _data_2._data = _step;
@@ -259,7 +259,7 @@ namespace Motor{
 
         std::vector<uint8_t> p_data;
         uint8_t _num = 0x01;
-        uint8_t _cmd = is_echo ? this->CMD_FREE_Echo : this->CMD_FREE_No_Echo;
+        uint8_t _cmd = is_echo ? this->CMD_CMA_Echo : this->CMD_CMA_No_Echo;
         unionType _data_1, _data_2;
         _data_1._data = _index;
         _data_2._data = _step;
@@ -296,7 +296,7 @@ namespace Motor{
 
         std::vector<uint8_t> p_data;
         uint8_t _num = 0x01;
-        uint8_t _cmd = is_echo ? this->CMD_FREE_Echo : this->CMD_FREE_No_Echo;
+        uint8_t _cmd = is_echo ? this->CMD_NULL_Echo : this->CMD_NULL_No_Echo;
         unionType _data_1, _data_2;
         _data_1._data = 0x00;
         _data_2._data = 0x00;

@@ -22,6 +22,16 @@ namespace Motor
         const uint8_t CMD_FREE_No_Echo  = 0x69;
         const uint8_t CMD_SVON_Echo     = 0x06;
         const uint8_t CMD_SVON_No_Echo  = 0x6A;
+        const uint8_t CMD_CS_Echo       = 0x0E;
+        const uint8_t CMD_CS_No_Echo    = 0x72;
+        const uint8_t CMD_CMR_Echo      = 0x0F;
+        const uint8_t CMD_CMR_No_Echo   = 0x73;
+        const uint8_t CMD_CMA_Echo      = 0x10;
+        const uint8_t CMD_CMA_No_Echo   = 0x74;
+        const uint8_t CMD_NULL_Echo     = 0x63;
+        const uint8_t CMD_NULL_No_Echo  = 0x77;
+        
+        
 
         const int rcv_size              =    8;
 

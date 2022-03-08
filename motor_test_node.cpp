@@ -20,12 +20,29 @@ int main(int argc, char **argv)
     // 開啟通訊
     p_motor->open();
 
-    if(true){
+    // if(true){
+    //     try
+    //     {
+    //         p_motor -> JG(300, false);
+    //         // p_motor -> NULL_TO_ECHO(true);
+    //         sleep(5);
+    //         // p_motor -> SetMotorSpeed_RPM(0, false);
+    //     }
+    //     catch(const std::exception& e)
+    //     {
+    //         std::cerr << e.what() << '\n';
+    //     }
+        
+    // }
+
+    p_motor -> JG(300, false);
+    sleep(1);
+    for(auto i=0; i<10; i++){
         try
         {
-            // p_motor -> JG(300, false);
+            printf("\nNo.%i Loop:", i);
             p_motor -> NULL_TO_ECHO(true);
-            sleep(5);
+            sleep(1);
             // p_motor -> SetMotorSpeed_RPM(0, false);
         }
         catch(const std::exception& e)
