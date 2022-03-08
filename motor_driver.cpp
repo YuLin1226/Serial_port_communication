@@ -28,6 +28,8 @@ namespace Motor{
             * 
             * Example: Set +300 rpm / No Echo
             * 0 65 1 1 6e 0 0 1 2c 34 72
+            * 
+            * If echo, receive 8 bytes data per message.
         ============================================================================== */
 
         std::vector<uint8_t> p_data;
@@ -65,6 +67,8 @@ namespace Motor{
         /* ==============================================================================
             * Example: No Echo
             * 0 65 1 1 64 0 0 0 0 ac 3e
+            * 
+            * If echo, receive 8 bytes data per message.
         ============================================================================== */
         
         std::vector<uint8_t> p_data;
@@ -102,6 +106,8 @@ namespace Motor{
         /* ==============================================================================
             * Example: No Echo
             * 0 65 1 1 69 0 0 0 0 81 ff
+            * 
+            * If echo, receive 8 bytes data per message.
         ============================================================================== */
         
         std::vector<uint8_t> p_data;
@@ -136,6 +142,10 @@ namespace Motor{
 
     void MotorDriver::SVON(bool is_echo = false){
 
+        /* ==============================================================================
+            * If echo, receive 8 bytes data per message.
+        ============================================================================== */
+
         std::vector<uint8_t> p_data;
         uint8_t _num = 0x01;
         uint8_t _cmd = is_echo ? this->CMD_SVON_Echo : this->CMD_SVON_No_Echo;
@@ -169,6 +179,10 @@ namespace Motor{
 
     void MotorDriver::CS(uint16_t _index, uint16_t _step, bool is_echo = false){
         
+        /* ==============================================================================
+            * If echo, receive 8 bytes data per message.
+        ============================================================================== */
+
         std::vector<uint8_t> p_data;
         uint8_t _num = 0x01;
         uint8_t _cmd = is_echo ? this->CMD_FREE_Echo : this->CMD_FREE_No_Echo;
@@ -202,6 +216,10 @@ namespace Motor{
 
     void MotorDriver::CMR(uint16_t _index, uint16_t _step, bool is_echo = false){
         
+        /* ==============================================================================
+            * If echo, receive 8 bytes data per message.
+        ============================================================================== */
+
         std::vector<uint8_t> p_data;
         uint8_t _num = 0x01;
         uint8_t _cmd = is_echo ? this->CMD_FREE_Echo : this->CMD_FREE_No_Echo;
@@ -235,6 +253,10 @@ namespace Motor{
 
     void MotorDriver::CMA(uint16_t _index, uint16_t _step, bool is_echo = false){
         
+        /* ==============================================================================
+            * If echo, receive 8 bytes data per message.
+        ============================================================================== */
+
         std::vector<uint8_t> p_data;
         uint8_t _num = 0x01;
         uint8_t _cmd = is_echo ? this->CMD_FREE_Echo : this->CMD_FREE_No_Echo;
@@ -268,6 +290,10 @@ namespace Motor{
 
     void MotorDriver::NULL_TO_ECHO(bool is_echo = false){
         
+        /* ==============================================================================
+            * If echo, receive 8 bytes data per message.
+        ============================================================================== */
+
         std::vector<uint8_t> p_data;
         uint8_t _num = 0x01;
         uint8_t _cmd = is_echo ? this->CMD_FREE_Echo : this->CMD_FREE_No_Echo;
