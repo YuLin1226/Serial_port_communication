@@ -325,7 +325,7 @@ namespace Motor{
 
     }
 
-    void MotorDriver::NULL_TO_ECHO(bool is_echo = false){
+    void MotorDriver::NULL_TO_ECHO(bool is_echo = true){
         
         /* ==============================================================================
             * If echo, receive 8 bytes data per message.
