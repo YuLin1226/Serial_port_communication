@@ -22,6 +22,8 @@ namespace Motor
         const uint8_t CMD_FREE_No_Echo  = 0x69;
         const uint8_t CMD_SVON_Echo     = 0x06;
         const uint8_t CMD_SVON_No_Echo  = 0x6A;
+        const uint8_t CMD_IMR_Echo      = 0x0B;
+        const uint8_t CMD_IMR_No_Echo   = 0x6F;
         const uint8_t CMD_CS_Echo       = 0x0E;
         const uint8_t CMD_CS_No_Echo    = 0x72;
         const uint8_t CMD_CMR_Echo      = 0x0F;
@@ -44,6 +46,7 @@ namespace Motor
         void ISTOP(bool is_echo);
         void FREE(bool is_echo);
         void SVON(bool is_echo);
+        void IMR(uint16_t _index, uint16_t _step, bool is_echo);
         void CS(uint16_t _index, uint16_t _step, bool is_echo);
         void CMR(uint16_t _index, uint16_t _step, bool is_echo);
         void CMA(uint16_t _index, uint16_t _step, bool is_echo);
