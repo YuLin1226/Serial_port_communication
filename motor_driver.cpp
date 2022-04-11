@@ -19,6 +19,45 @@ namespace Motor{
     }
 
 
+    // Motor Drive
+    void MotorDriver::ISTOP(bool is_echo = false){
+
+        /* ==============================================================================
+            * Example: No Echo
+            * 0 65 1 1 64 0 0 0 0 ac 3e
+            * 
+            * If echo, receive 8 bytes data per message.
+        ============================================================================== */
+        
+        std::vector<uint8_t> p_data;
+        uint8_t _num = 0x01;
+        uint8_t _cmd = is_echo ? this->CMD_ISTOP_Echo : this->CMD_ISTOP_No_Echo;
+        unionType _data_1, _data_2;
+        _data_1._data = 0x00;
+        _data_2._data = 0x00;
+
+        p_data.clear();
+        p_data.push_back(this->Broadcast);
+        p_data.push_back(this->FC_MasterSendCMD);
+        p_data.push_back(_num);
+        p_data.push_back(this->MOTOR_ID);
+        p_data.push_back(_cmd);
+        p_data.push_back(_data_1._data_byte[1]);
+        p_data.push_back(_data_1._data_byte[0]);
+        p_data.push_back(_data_2._data_byte[1]);
+        p_data.push_back(_data_2._data_byte[0]);
+        uint16_t crc = this->calculate_CRC(p_data);
+        p_data.push_back(crc);
+        p_data.push_back(crc >> 8);
+        std::vector<char> p_char(p_data.begin(), p_data.end());
+        this->write(p_char);
+
+        std::cout <<  "Send ISTOP Command: ";
+        for(auto i=0;i<p_char.size();i++){            
+            std::cout << std::hex << (int)p_data[i] << " ";
+        }
+        std::cout << std::endl;
+    }
 
     void MotorDriver::JG(uint16_t _cmd_rpm, bool is_echo = false){
 
@@ -56,45 +95,6 @@ namespace Motor{
         this->write(p_char);
 
         std::cout <<  "Send JG Command: ";
-        for(auto i=0;i<p_char.size();i++){            
-            std::cout << std::hex << (int)p_data[i] << " ";
-        }
-        std::cout << std::endl;
-    }
-
-    void MotorDriver::ISTOP(bool is_echo = false){
-
-        /* ==============================================================================
-            * Example: No Echo
-            * 0 65 1 1 64 0 0 0 0 ac 3e
-            * 
-            * If echo, receive 8 bytes data per message.
-        ============================================================================== */
-        
-        std::vector<uint8_t> p_data;
-        uint8_t _num = 0x01;
-        uint8_t _cmd = is_echo ? this->CMD_ISTOP_Echo : this->CMD_ISTOP_No_Echo;
-        unionType _data_1, _data_2;
-        _data_1._data = 0x00;
-        _data_2._data = 0x00;
-
-        p_data.clear();
-        p_data.push_back(this->Broadcast);
-        p_data.push_back(this->FC_MasterSendCMD);
-        p_data.push_back(_num);
-        p_data.push_back(this->MOTOR_ID);
-        p_data.push_back(_cmd);
-        p_data.push_back(_data_1._data_byte[1]);
-        p_data.push_back(_data_1._data_byte[0]);
-        p_data.push_back(_data_2._data_byte[1]);
-        p_data.push_back(_data_2._data_byte[0]);
-        uint16_t crc = this->calculate_CRC(p_data);
-        p_data.push_back(crc);
-        p_data.push_back(crc >> 8);
-        std::vector<char> p_char(p_data.begin(), p_data.end());
-        this->write(p_char);
-
-        std::cout <<  "Send ISTOP Command: ";
         for(auto i=0;i<p_char.size();i++){            
             std::cout << std::hex << (int)p_data[i] << " ";
         }
@@ -384,6 +384,263 @@ namespace Motor{
             }
 
         }
+    }
+
+    // Motor Drive Lite
+    void MotorDriver::ISTOP_Lite(bool is_echo = false){
+
+        std::vector<uint8_t> p_data;
+        uint8_t _num = 0x01;
+        uint8_t _echo_bit = is_echo ? this->Echo_bit_Lite : this->No_Echo_bit_Lite;
+        unionType _data_1, _data_2;
+        _data_1._data = 0x00;
+        _data_2._data = _echo_bit;
+
+        p_data.clear();
+        p_data.push_back(this->Broadcast);
+        p_data.push_back(this->FC_MasterSendCMD_Lite);
+        p_data.push_back(_num);
+        p_data.push_back(this->MOTOR_ID);
+        p_data.push_back(this->CMD_ISTOP_Lite);
+        p_data.push_back(_data_1._data_byte[1]);
+        p_data.push_back(_data_1._data_byte[0]);
+        p_data.push_back(_data_2._data_byte[1]);
+        p_data.push_back(_data_2._data_byte[0]);
+        uint16_t crc = this->calculate_CRC(p_data);
+        p_data.push_back(crc);
+        p_data.push_back(crc >> 8);
+        std::vector<char> p_char(p_data.begin(), p_data.end());
+        this->write(p_char);
+
+        std::cout <<  "Send ISTOP_Lite Command: ";
+        for(auto i=0;i<p_char.size();i++){            
+            std::cout << std::hex << (int)p_data[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    void MotorDriver::JG_Lite(uint16_t _cmd_rpm, bool is_echo = false){
+
+        std::vector<uint8_t> p_data;
+        uint8_t _num = 0x01;
+        uint8_t _echo_bit = is_echo ? this->Echo_bit_Lite : this->No_Echo_bit_Lite;
+        unionType _data_1, _data_2;
+        _data_1._data = _cmd_rpm;
+        _data_2._data = _echo_bit;
+
+        p_data.clear();
+        p_data.push_back(this->Broadcast);
+        p_data.push_back(this->FC_MasterSendCMD_Lite);
+        p_data.push_back(_num);
+        p_data.push_back(this->MOTOR_ID);
+        p_data.push_back(this->CMD_JG_Lite);
+        p_data.push_back(_data_1._data_byte[1]);
+        p_data.push_back(_data_1._data_byte[0]);
+        p_data.push_back(_data_2._data_byte[1]);
+        p_data.push_back(_data_2._data_byte[0]);
+        uint16_t crc = this->calculate_CRC(p_data);
+        p_data.push_back(crc);
+        p_data.push_back(crc >> 8);
+        std::vector<char> p_char(p_data.begin(), p_data.end());
+        this->write(p_char);
+
+        std::cout <<  "Send JG_Lite Command: ";
+        for(auto i=0;i<p_char.size();i++){            
+            std::cout << std::hex << (int)p_data[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    void MotorDriver::FREE_Lite(bool is_echo = false){
+
+        std::vector<uint8_t> p_data;
+        uint8_t _num = 0x01;
+        uint8_t _echo_bit = is_echo ? this->Echo_bit_Lite : this->No_Echo_bit_Lite;
+        unionType _data_1, _data_2;
+        _data_1._data = 0x00;
+        _data_2._data = _echo_bit;
+
+        p_data.clear();
+        p_data.push_back(this->Broadcast);
+        p_data.push_back(this->FC_MasterSendCMD_Lite);
+        p_data.push_back(_num);
+        p_data.push_back(this->MOTOR_ID);
+        p_data.push_back(this->CMD_FREE_Lite);
+        p_data.push_back(_data_1._data_byte[1]);
+        p_data.push_back(_data_1._data_byte[0]);
+        p_data.push_back(_data_2._data_byte[1]);
+        p_data.push_back(_data_2._data_byte[0]);
+        uint16_t crc = this->calculate_CRC(p_data);
+        p_data.push_back(crc);
+        p_data.push_back(crc >> 8);
+        std::vector<char> p_char(p_data.begin(), p_data.end());
+        this->write(p_char);
+
+        std::cout <<  "Send FREE_Lite Command: ";
+        for(auto i=0;i<p_char.size();i++){            
+            std::cout << std::hex << (int)p_data[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    void MotorDriver::SVON_Lite(bool is_echo = false){
+
+        std::vector<uint8_t> p_data;
+        uint8_t _num = 0x01;
+        uint8_t _echo_bit = is_echo ? this->Echo_bit_Lite : this->No_Echo_bit_Lite;
+        unionType _data_1, _data_2;
+        _data_1._data = 0x00;
+        _data_2._data = _echo_bit;
+
+        p_data.clear();
+        p_data.push_back(this->Broadcast);
+        p_data.push_back(this->FC_MasterSendCMD_Lite);
+        p_data.push_back(_num);
+        p_data.push_back(this->MOTOR_ID);
+        p_data.push_back(this->CMD_SVON_Lite);
+        p_data.push_back(_data_1._data_byte[1]);
+        p_data.push_back(_data_1._data_byte[0]);
+        p_data.push_back(_data_2._data_byte[1]);
+        p_data.push_back(_data_2._data_byte[0]);
+        uint16_t crc = this->calculate_CRC(p_data);
+        p_data.push_back(crc);
+        p_data.push_back(crc >> 8);
+        std::vector<char> p_char(p_data.begin(), p_data.end());
+        this->write(p_char);
+
+        std::cout <<  "Send SVON_Lite Command: ";
+        for(auto i=0;i<p_char.size();i++){            
+            std::cout << std::hex << (int)p_data[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    void MotorDriver::SVOFF_Lite(bool is_echo = false){
+
+        std::vector<uint8_t> p_data;
+        uint8_t _num = 0x01;
+        uint8_t _echo_bit = is_echo ? this->Echo_bit_Lite : this->No_Echo_bit_Lite;
+        unionType _data_1, _data_2;
+        _data_1._data = 0x00;
+        _data_2._data = _echo_bit;
+
+        p_data.clear();
+        p_data.push_back(this->Broadcast);
+        p_data.push_back(this->FC_MasterSendCMD_Lite);
+        p_data.push_back(_num);
+        p_data.push_back(this->MOTOR_ID);
+        p_data.push_back(this->CMD_SVOFF_Lite);
+        p_data.push_back(_data_1._data_byte[1]);
+        p_data.push_back(_data_1._data_byte[0]);
+        p_data.push_back(_data_2._data_byte[1]);
+        p_data.push_back(_data_2._data_byte[0]);
+        uint16_t crc = this->calculate_CRC(p_data);
+        p_data.push_back(crc);
+        p_data.push_back(crc >> 8);
+        std::vector<char> p_char(p_data.begin(), p_data.end());
+        this->write(p_char);
+
+        std::cout <<  "Send SVOFF_Lite Command: ";
+        for(auto i=0;i<p_char.size();i++){            
+            std::cout << std::hex << (int)p_data[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    void MotorDriver::ALM_RST_Lite(bool is_echo = false){
+
+        std::vector<uint8_t> p_data;
+        uint8_t _num = 0x01;
+        uint8_t _echo_bit = is_echo ? this->Echo_bit_Lite : this->No_Echo_bit_Lite;
+        unionType _data_1, _data_2;
+        _data_1._data = 0x00;
+        _data_2._data = _echo_bit;
+
+        p_data.clear();
+        p_data.push_back(this->Broadcast);
+        p_data.push_back(this->FC_MasterSendCMD_Lite);
+        p_data.push_back(_num);
+        p_data.push_back(this->MOTOR_ID);
+        p_data.push_back(this->CMD_ALM_RST_Lite);
+        p_data.push_back(_data_1._data_byte[1]);
+        p_data.push_back(_data_1._data_byte[0]);
+        p_data.push_back(_data_2._data_byte[1]);
+        p_data.push_back(_data_2._data_byte[0]);
+        uint16_t crc = this->calculate_CRC(p_data);
+        p_data.push_back(crc);
+        p_data.push_back(crc >> 8);
+        std::vector<char> p_char(p_data.begin(), p_data.end());
+        this->write(p_char);
+
+        std::cout <<  "Send ALM_RST_Lite Command: ";
+        for(auto i=0;i<p_char.size();i++){            
+            std::cout << std::hex << (int)p_data[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    void MotorDriver::BRAKE_Lite(bool is_echo = false){
+
+        std::vector<uint8_t> p_data;
+        uint8_t _num = 0x01;
+        uint8_t _echo_bit = is_echo ? this->Echo_bit_Lite : this->No_Echo_bit_Lite;
+        unionType _data_1, _data_2;
+        _data_1._data = 0x00;
+        _data_2._data = _echo_bit;
+
+        p_data.clear();
+        p_data.push_back(this->Broadcast);
+        p_data.push_back(this->FC_MasterSendCMD_Lite);
+        p_data.push_back(_num);
+        p_data.push_back(this->MOTOR_ID);
+        p_data.push_back(this->CMD_BRAKE_Lite);
+        p_data.push_back(_data_1._data_byte[1]);
+        p_data.push_back(_data_1._data_byte[0]);
+        p_data.push_back(_data_2._data_byte[1]);
+        p_data.push_back(_data_2._data_byte[0]);
+        uint16_t crc = this->calculate_CRC(p_data);
+        p_data.push_back(crc);
+        p_data.push_back(crc >> 8);
+        std::vector<char> p_char(p_data.begin(), p_data.end());
+        this->write(p_char);
+
+        std::cout <<  "Send BRAKE_Lite Command: ";
+        for(auto i=0;i<p_char.size();i++){            
+            std::cout << std::hex << (int)p_data[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    void MotorDriver::NULL_Lite(bool is_echo = false){
+
+        std::vector<uint8_t> p_data;
+        uint8_t _num = 0x01;
+        uint8_t _echo_bit = is_echo ? this->Echo_bit_Lite : this->No_Echo_bit_Lite;
+        unionType _data_1, _data_2;
+        _data_1._data = 0x00;
+        _data_2._data = _echo_bit;
+
+        p_data.clear();
+        p_data.push_back(this->Broadcast);
+        p_data.push_back(this->FC_MasterSendCMD_Lite);
+        p_data.push_back(_num);
+        p_data.push_back(this->MOTOR_ID);
+        p_data.push_back(this->CMD_NULL_Lite);
+        p_data.push_back(_data_1._data_byte[1]);
+        p_data.push_back(_data_1._data_byte[0]);
+        p_data.push_back(_data_2._data_byte[1]);
+        p_data.push_back(_data_2._data_byte[0]);
+        uint16_t crc = this->calculate_CRC(p_data);
+        p_data.push_back(crc);
+        p_data.push_back(crc >> 8);
+        std::vector<char> p_char(p_data.begin(), p_data.end());
+        this->write(p_char);
+
+        std::cout <<  "Send NULL_Lite Command: ";
+        for(auto i=0;i<p_char.size();i++){            
+            std::cout << std::hex << (int)p_data[i] << " ";
+        }
+        std::cout << std::endl;
     }
 
 
