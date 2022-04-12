@@ -1,10 +1,11 @@
 #include "include/motor_driver.h"
+#include <cmath>
 
 namespace Motor{
 
     union unionType
     {
-        uint8_t _data_byte[2];
+        uint8_t _data_byte[2]; // [1] 高8位,上位 ； [0] 低8位,下位
         uint16_t _data;
     };
 
@@ -360,30 +361,30 @@ namespace Motor{
         }
         std::cout << std::endl;
 
-        if(is_echo){
+        // if(is_echo){
 
-            std::vector<char> rcv_char;
+        //     std::vector<char> rcv_char;
             
-            {
-                usleep(RESPONSE_DELAY_US);
-                try
-                {
-                    rcv_char = asyncRead(this->rcv_size);
-                }
-                catch(const std::exception& e)
-                {
-                    std::cerr << e.what() << '\n';
-                }
-                std::cout <<  "Received Data: ";
-                for(auto i=0;i<rcv_char.size();i++){            
-                    uint8_t a = rcv_char[i];
-                    std::cout << std::hex << +a << " ";
-                }
-                std::cout << std::endl;
+        //     {
+        //         usleep(RESPONSE_DELAY_US);
+        //         try
+        //         {
+        //             rcv_char = asyncRead(this->rcv_size);
+        //         }
+        //         catch(const std::exception& e)
+        //         {
+        //             std::cerr << e.what() << '\n';
+        //         }
+        //         std::cout <<  "Received Data: ";
+        //         for(auto i=0;i<rcv_char.size();i++){            
+        //             uint8_t a = rcv_char[i];
+        //             std::cout << std::hex << +a << " ";
+        //         }
+        //         std::cout << std::endl;
                 
-            }
+        //     }
 
-        }
+        // }
     }
 
     // Motor Drive Lite
@@ -641,6 +642,36 @@ namespace Motor{
             std::cout << std::hex << (int)p_data[i] << " ";
         }
         std::cout << std::endl;
+    }
+
+    double MotorDriver::get_Encoder(){
+        const int expected_bytes = 8;
+
+        this->NULL_TO_ECHO(true);        
+        std::vector<char> response;
+        {
+            usleep(RESPONSE_DELAY_US);
+            try
+            {
+                response = asyncRead(expected_bytes);
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+        }
+
+        double encoder_data_;
+        union unionType encoder_index_, encoder_step_;
+        encoder_index_._data_byte[1]    = response.at(2);
+        encoder_index_._data_byte[0]    = response.at(3);
+        encoder_step_._data_byte[1]     = response.at(4);
+        encoder_step_._data_byte[0]     = response.at(5);
+        std:: cout << "=========\n";
+        std:: cout <<encoder_index_._data << " " << encoder_step_._data <<"\n";
+        encoder_data_ = (encoder_index_._data + encoder_step_._data/10000)*M_PI/180;
+
+        return encoder_data_;
     }
 
 

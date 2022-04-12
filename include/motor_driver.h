@@ -55,6 +55,8 @@ namespace Motor
         void CMA(uint16_t _index, uint16_t _step, bool is_echo);
         void NULL_TO_ECHO(bool is_echo);
 
+        double get_Encoder();
+        
     private:
         const uint8_t MOTOR_ID_Lite         = 0x01; // this shouldn't be const, cuz it's different for different motors.
         const uint8_t FC_MasterSendCMD_Lite = 0x41;
@@ -78,6 +80,7 @@ namespace Motor
         6. Voltage (V)
         7. Current (A)
         */
+
 
     public:
         void ISTOP_Lite(bool is_echo);
