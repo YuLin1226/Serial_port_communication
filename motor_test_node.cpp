@@ -34,18 +34,19 @@ int main(int argc, char **argv)
     //     }
         
     // }
-
-    // p_motor -> JG(300, false);
-    p_motor -> CS(0, 0, false);
+    
+    p_motor -> CS(0, 0, false); // init encoder count
     sleep(1);
-    p_motor -> CMR(10, 5000, false);
+
+    p_motor -> JG(300, false);
+    // p_motor -> CMR(10, 5000, false);
     sleep(1);
     for(auto i=0; i<10; i++){
         try
         {
             // p_motor -> NULL_TO_ECHO(true);
             double enc_data_ = p_motor->get_Encoder();
-            // std::cout << "\nNo. " << i << "loop, data: " << enc_data_ << std::endl;
+            std::cout << std::dec << "No. " << i+1 << " loop, data: " << enc_data_ << "\n" << std::endl;
             sleep(1);
             // // p_motor -> SetMotorSpeed_RPM(0, false);
             

@@ -667,8 +667,8 @@ namespace Motor{
         encoder_index_._data_byte[0]    = response.at(3);
         encoder_step_._data_byte[1]     = response.at(4);
         encoder_step_._data_byte[0]     = response.at(5);
-        std:: cout << "=========\n";
-        std:: cout << std::dec << encoder_index_._data << " " << encoder_step_._data <<"\n";
+        // std:: cout << "=========\n";
+        // std:: cout << std::dec << encoder_index_._data << " " << encoder_step_._data <<"\n";
         encoder_data_ = (encoder_index_._data + encoder_step_._data/10000.0)*2.0*M_PI;
         return encoder_data_;
     }
