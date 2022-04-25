@@ -45,7 +45,7 @@ int main(int argc, char **argv)
         try
         {
             // p_motor -> NULL_TO_ECHO(true);
-            double enc_data_ = p_motor->get_Encoder();
+            double enc_data_ = p_motor->get_encoder();
             std::cout << std::dec << "No. " << i+1 << " loop, data: " << enc_data_ << "\n" << std::endl;
             sleep(1);
             // // p_motor -> SetMotorSpeed_RPM(0, false);
