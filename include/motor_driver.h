@@ -42,16 +42,17 @@ namespace Motor
         MotorDriver(const std::string _serial_port, const int _baud_rate);
         virtual ~MotorDriver();
 
-        void ISTOP(bool is_echo);
-        void JG(uint16_t _cmd_rpm, bool is_echo);
-        void FREE(bool is_echo);
-        void SVON(bool is_echo);
-        void SVOFF(bool is_echo);
-        void IMR(uint16_t index, uint16_t step, bool is_echo);
-        void CS(uint16_t index, uint16_t step, bool is_echo);
-        void CMR(uint16_t index, uint16_t step, bool is_echo);
-        void CMA(uint16_t index, uint16_t step, bool is_echo);
-        void NULL_TO_ECHO(bool is_echo);
+        // 這邊要更新成 id 也作為參數的版本
+        void ISTOP(uint8_t motor_id, bool is_echo);
+        void JG(uint8_t motor_id, uint16_t _cmd_rpm, bool is_echo);
+        void FREE(uint8_t motor_id, bool is_echo);
+        void SVON(uint8_t motor_id, bool is_echo);
+        void SVOFF(uint8_t motor_id, bool is_echo);
+        void IMR(uint8_t motor_id, uint16_t index, uint16_t step, bool is_echo);
+        void CS(uint8_t motor_id, uint16_t index, uint16_t step, bool is_echo);
+        void CMR(uint8_t motor_id, uint16_t index, uint16_t step, bool is_echo);
+        void CMA(uint8_t motor_id, uint16_t index, uint16_t step, bool is_echo);
+        void NULL_TO_ECHO(uint8_t motor_id, bool is_echo);
 
 
     private:
@@ -80,14 +81,15 @@ namespace Motor
 
 
     public:
-        void ISTOP_Lite(bool is_echo);
-        void JG_Lite(uint16_t _cmd_rpm, bool is_echo);
-        void FREE_Lite(bool is_echo);
-        void SVON_Lite(bool is_echo);
-        void SVOFF_Lite(bool is_echo);
-        void ALM_RST_Lite(bool is_echo);
-        void BRAKE_Lite(bool is_echo);
-        void NULL_Lite(bool is_echo);
+        // 這邊要更新成 id 也作為參數的版本
+        void ISTOP_Lite(uint8_t motor_id, bool is_echo);
+        void JG_Lite(uint8_t motor_id, uint16_t _cmd_rpm, bool is_echo);
+        void FREE_Lite(uint8_t motor_id, bool is_echo);
+        void SVON_Lite(uint8_t motor_id, bool is_echo);
+        void SVOFF_Lite(uint8_t motor_id, bool is_echo);
+        void ALM_RST_Lite(uint8_t motor_id, bool is_echo);
+        void BRAKE_Lite(uint8_t motor_id, bool is_echo);
+        void NULL_Lite(uint8_t motor_id, bool is_echo);
 
     public:
         double get_encoder();

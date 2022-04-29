@@ -21,7 +21,7 @@ namespace Motor{
 
 
     // Motor Drive
-    void MotorDriver::ISTOP(bool is_echo = false){
+    void MotorDriver::ISTOP(uint8_t motor_id = 0x01, bool is_echo = false){
 
         /* ==============================================================================
             * Example: No Echo
@@ -41,7 +41,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(cmd);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -60,7 +60,7 @@ namespace Motor{
         std::cout << std::endl;
     }
 
-    void MotorDriver::JG(uint16_t cmd_rpm, bool is_echo = false){
+    void MotorDriver::JG(uint8_t motor_id = 0x01, uint16_t cmd_rpm, bool is_echo = false){
 
         /* ==============================================================================
             *     0 < _cmd_rpm < 4000  :  CW
@@ -83,7 +83,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(cmd);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -102,7 +102,7 @@ namespace Motor{
         std::cout << std::endl;
     }
 
-    void MotorDriver::FREE(bool is_echo = false){
+    void MotorDriver::FREE(uint8_t motor_id = 0x01, bool is_echo = false){
 
         /* ==============================================================================
             * Example: No Echo
@@ -122,7 +122,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(cmd);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -141,7 +141,7 @@ namespace Motor{
         std::cout << std::endl;
     }
 
-    void MotorDriver::SVON(bool is_echo = false){
+    void MotorDriver::SVON(uint8_t motor_id = 0x01, bool is_echo = false){
 
         /* ==============================================================================
             * If echo, receive 8 bytes data per message.
@@ -158,7 +158,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(cmd);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -178,7 +178,7 @@ namespace Motor{
 
     }
 
-    void MotorDriver::IMR(uint16_t index, uint16_t step, bool is_echo = false){
+    void MotorDriver::IMR(uint8_t motor_id = 0x01, uint16_t index, uint16_t step, bool is_echo = false){
         
         /* ==============================================================================
             * If echo, receive 8 bytes data per message.
@@ -195,7 +195,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(cmd);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -215,7 +215,7 @@ namespace Motor{
 
     }
 
-    void MotorDriver::CS(uint16_t index, uint16_t step, bool is_echo = false){
+    void MotorDriver::CS(uint8_t motor_id = 0x01, uint16_t index, uint16_t step, bool is_echo = false){
         
         /* ==============================================================================
             * If echo, receive 8 bytes data per message.
@@ -232,7 +232,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(cmd);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -252,7 +252,7 @@ namespace Motor{
 
     }
 
-    void MotorDriver::CMR(uint16_t index, uint16_t step, bool is_echo = false){
+    void MotorDriver::CMR(uint8_t motor_id = 0x01, uint16_t index, uint16_t step, bool is_echo = false){
         
         /* ==============================================================================
             * If echo, receive 8 bytes data per message.
@@ -269,7 +269,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(cmd);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -289,7 +289,7 @@ namespace Motor{
 
     }
 
-    void MotorDriver::CMA(uint16_t index, uint16_t step, bool is_echo = false){
+    void MotorDriver::CMA(uint8_t motor_id = 0x01, uint16_t index, uint16_t step, bool is_echo = false){
         
         /* ==============================================================================
             * If echo, receive 8 bytes data per message.
@@ -306,7 +306,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(cmd);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -326,7 +326,7 @@ namespace Motor{
 
     }
 
-    void MotorDriver::NULL_TO_ECHO(bool is_echo = true){
+    void MotorDriver::NULL_TO_ECHO(uint8_t motor_id = 0x01, bool is_echo = true){
         
         /* ==============================================================================
             * If echo, receive 8 bytes data per message.
@@ -343,7 +343,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(cmd);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -388,7 +388,7 @@ namespace Motor{
     }
 
     // Motor Drive Lite
-    void MotorDriver::ISTOP_Lite(bool is_echo = false){
+    void MotorDriver::ISTOP_Lite(uint8_t motor_id = 0x01, bool is_echo = false){
 
         std::vector<uint8_t> p_data;
         uint8_t num = 0x01;
@@ -401,7 +401,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_Lite_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(this->cmd_ISTOP_Lite_);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -420,7 +420,7 @@ namespace Motor{
         std::cout << std::endl;
     }
 
-    void MotorDriver::JG_Lite(uint16_t cmd_rpm, bool is_echo = false){
+    void MotorDriver::JG_Lite(uint8_t motor_id = 0x01, uint16_t cmd_rpm, bool is_echo = false){
 
         std::vector<uint8_t> p_data;
         uint8_t num = 0x01;
@@ -433,7 +433,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_Lite_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(this->cmd_JG_Lite_);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -452,7 +452,7 @@ namespace Motor{
         std::cout << std::endl;
     }
 
-    void MotorDriver::FREE_Lite(bool is_echo = false){
+    void MotorDriver::FREE_Lite(uint8_t motor_id = 0x01, bool is_echo = false){
 
         std::vector<uint8_t> p_data;
         uint8_t num = 0x01;
@@ -465,7 +465,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_Lite_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(this->cmd_FREE_Lite_);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -484,7 +484,7 @@ namespace Motor{
         std::cout << std::endl;
     }
 
-    void MotorDriver::SVON_Lite(bool is_echo = false){
+    void MotorDriver::SVON_Lite(uint8_t motor_id = 0x01, bool is_echo = false){
 
         std::vector<uint8_t> p_data;
         uint8_t num = 0x01;
@@ -497,7 +497,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_Lite_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(this->cmd_SVON_Lite_);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -516,7 +516,7 @@ namespace Motor{
         std::cout << std::endl;
     }
 
-    void MotorDriver::SVOFF_Lite(bool is_echo = false){
+    void MotorDriver::SVOFF_Lite(uint8_t motor_id = 0x01, bool is_echo = false){
 
         std::vector<uint8_t> p_data;
         uint8_t num = 0x01;
@@ -529,7 +529,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_Lite_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(this->cmd_SVOFF_Lite_);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -548,7 +548,7 @@ namespace Motor{
         std::cout << std::endl;
     }
 
-    void MotorDriver::ALM_RST_Lite(bool is_echo = false){
+    void MotorDriver::ALM_RST_Lite(uint8_t motor_id = 0x01, bool is_echo = false){
 
         std::vector<uint8_t> p_data;
         uint8_t num = 0x01;
@@ -561,7 +561,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_Lite_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(this->cmd_ALM_RST_Lite_);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -580,7 +580,7 @@ namespace Motor{
         std::cout << std::endl;
     }
 
-    void MotorDriver::BRAKE_Lite(bool is_echo = false){
+    void MotorDriver::BRAKE_Lite(uint8_t motor_id = 0x01, bool is_echo = false){
 
         std::vector<uint8_t> p_data;
         uint8_t num = 0x01;
@@ -593,7 +593,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_Lite_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(this->cmd_BRAKE_Lite_);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -612,7 +612,7 @@ namespace Motor{
         std::cout << std::endl;
     }
 
-    void MotorDriver::NULL_Lite(bool is_echo = false){
+    void MotorDriver::NULL_Lite(uint8_t motor_id = 0x01, bool is_echo = false){
 
         std::vector<uint8_t> p_data;
         uint8_t num = 0x01;
@@ -625,7 +625,7 @@ namespace Motor{
         p_data.push_back(this->broadcast_);
         p_data.push_back(this->fc_master_send_cmd_Lite_);
         p_data.push_back(num);
-        p_data.push_back(this->motor_id_);
+        p_data.push_back(motor_id);
         p_data.push_back(this->cmd_NULL_Lite_);
         p_data.push_back(data_1.data_byte[1]);
         p_data.push_back(data_1.data_byte[0]);
@@ -647,7 +647,7 @@ namespace Motor{
     double MotorDriver::get_encoder(){
         const int expected_bytes = 8;
 
-        this->NULL_TO_ECHO(true);        
+        this->NULL_TO_ECHO(0x01, true);        
         std::vector<char> response;
         {
             usleep(RESPONSE_DELAY_US);
@@ -675,7 +675,7 @@ namespace Motor{
 
     double MotorDriver::get_current(){
         const int expected_bytes = 20;
-        this->NULL_Lite(true);
+        this->NULL_Lite(0x01, true);
         std::vector<char> response;
         {
             usleep(RESPONSE_DELAY_US);
@@ -702,7 +702,7 @@ namespace Motor{
 
     double MotorDriver::get_voltage(){
         const int expected_bytes = 20;
-        this->NULL_Lite(true);
+        this->NULL_Lite(0x01, true);
         std::vector<char> response;
         {
             usleep(RESPONSE_DELAY_US);
@@ -740,7 +740,7 @@ namespace Motor{
 
         const int expected_bytes = 20;
         int rpm = 300;
-        this->JG(-rpm, false);
+        this->JG(0x01, -rpm, false);
         usleep(10000);
         bool io_x1_state = false;
         while (!io_x1_state)
@@ -749,7 +749,7 @@ namespace Motor{
             {
                 // get X1 IO & update to io_x1_state.
                 
-                this->NULL_Lite(true);
+                this->NULL_Lite(0x01, true);
                 std::vector<char> response;
                 {
                     usleep(RESPONSE_DELAY_US);
@@ -775,14 +775,14 @@ namespace Motor{
             }
         }
         
-        this->JG(rpm, false);
+        this->JG(0x01, rpm, false);
         usleep(10000);
         bool io_x2_state = false;
         while (!io_x2_state)
         {
             try
             {
-                this->NULL_Lite(true);
+                this->NULL_Lite(0x01, true);
                 std::vector<char> response;
                 {
                     usleep(RESPONSE_DELAY_US);
@@ -807,11 +807,11 @@ namespace Motor{
                 std::cerr << e.what() << '\n';
             }
         }
-        this->JG(0, false);
+        this->JG(0x01, 0, false);
         usleep(10000);
-        this->CMR(-20, 0, false);
+        this->CMR(0x01, -20, 0, false);
         usleep(10000);
-        this->CS(0, 0, false);
+        this->CS(0x01, 0, 0, false);
         usleep(10000);
 
         // 我覺得可以加入一個計時器，時間內沒有完成校正，就直接報錯。
