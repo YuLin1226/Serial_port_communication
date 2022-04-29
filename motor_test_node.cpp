@@ -35,10 +35,10 @@ int main(int argc, char **argv)
         
     // }
     
-    p_motor -> CS(0, 0, false); // init encoder count
+    p_motor -> CS(0x01, 0, 0, false); // init encoder count
     sleep(1);
 
-    p_motor -> JG(300, false);
+    p_motor -> JG(0x01, 300, false);
     // p_motor -> CMR(10, 5000, false);
     sleep(1);
     for(auto i=0; i<10; i++){

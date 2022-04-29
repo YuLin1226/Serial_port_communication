@@ -95,7 +95,7 @@ namespace Motor
         double get_encoder();
         double get_current();
         double get_voltage();
-        bool FindSteeringHome();
+        bool FindSteeringHome(uint8_t motor_id);
 
 
     public:

@@ -15,7 +15,7 @@ namespace Motor{
     }
     MotorDriver::~MotorDriver(){
         // STOP Motor
-        this->ISTOP(false);
+        this->ISTOP(motor_id_, false);
         // this->FREE(false);
     }
 
@@ -60,7 +60,7 @@ namespace Motor{
         std::cout << std::endl;
     }
 
-    void MotorDriver::JG(uint8_t motor_id = 0x01, uint16_t cmd_rpm, bool is_echo = false){
+    void MotorDriver::JG(uint8_t motor_id = 0x01, uint16_t cmd_rpm = 0x0000, bool is_echo = false){
 
         /* ==============================================================================
             *     0 < _cmd_rpm < 4000  :  CW
@@ -178,7 +178,7 @@ namespace Motor{
 
     }
 
-    void MotorDriver::IMR(uint8_t motor_id = 0x01, uint16_t index, uint16_t step, bool is_echo = false){
+    void MotorDriver::IMR(uint8_t motor_id = 0x01, uint16_t index = 0x0000, uint16_t step = 0x0000, bool is_echo = false){
         
         /* ==============================================================================
             * If echo, receive 8 bytes data per message.
@@ -215,7 +215,7 @@ namespace Motor{
 
     }
 
-    void MotorDriver::CS(uint8_t motor_id = 0x01, uint16_t index, uint16_t step, bool is_echo = false){
+    void MotorDriver::CS(uint8_t motor_id = 0x01, uint16_t index = 0x0000, uint16_t step = 0x0000, bool is_echo = false){
         
         /* ==============================================================================
             * If echo, receive 8 bytes data per message.
@@ -252,7 +252,7 @@ namespace Motor{
 
     }
 
-    void MotorDriver::CMR(uint8_t motor_id = 0x01, uint16_t index, uint16_t step, bool is_echo = false){
+    void MotorDriver::CMR(uint8_t motor_id = 0x01, uint16_t index = 0x0000, uint16_t step = 0x0000, bool is_echo = false){
         
         /* ==============================================================================
             * If echo, receive 8 bytes data per message.
@@ -289,7 +289,7 @@ namespace Motor{
 
     }
 
-    void MotorDriver::CMA(uint8_t motor_id = 0x01, uint16_t index, uint16_t step, bool is_echo = false){
+    void MotorDriver::CMA(uint8_t motor_id = 0x01, uint16_t index = 0x0000, uint16_t step = 0x0000, bool is_echo = false){
         
         /* ==============================================================================
             * If echo, receive 8 bytes data per message.
@@ -420,7 +420,7 @@ namespace Motor{
         std::cout << std::endl;
     }
 
-    void MotorDriver::JG_Lite(uint8_t motor_id = 0x01, uint16_t cmd_rpm, bool is_echo = false){
+    void MotorDriver::JG_Lite(uint8_t motor_id = 0x01, uint16_t cmd_rpm = 0x0000, bool is_echo = false){
 
         std::vector<uint8_t> p_data;
         uint8_t num = 0x01;
@@ -727,7 +727,7 @@ namespace Motor{
         return voltage_data;
     }
 
-    bool MotorDriver::FindSteeringHome(){
+    bool MotorDriver::FindSteeringHome(uint8_t motor_id){
         /*
             尋 Home 應該要前、後輪分開做。
             * 1. 低速左轉：JG
@@ -740,7 +740,7 @@ namespace Motor{
 
         const int expected_bytes = 20;
         int rpm = 300;
-        this->JG(0x01, -rpm, false);
+        this->JG(motor_id, -rpm, false);
         usleep(10000);
         bool io_x1_state = false;
         while (!io_x1_state)
@@ -749,7 +749,7 @@ namespace Motor{
             {
                 // get X1 IO & update to io_x1_state.
                 
-                this->NULL_Lite(0x01, true);
+                this->NULL_Lite(motor_id, true);
                 std::vector<char> response;
                 {
                     usleep(RESPONSE_DELAY_US);
@@ -775,14 +775,14 @@ namespace Motor{
             }
         }
         
-        this->JG(0x01, rpm, false);
+        this->JG(motor_id, rpm, false);
         usleep(10000);
         bool io_x2_state = false;
         while (!io_x2_state)
         {
             try
             {
-                this->NULL_Lite(0x01, true);
+                this->NULL_Lite(motor_id, true);
                 std::vector<char> response;
                 {
                     usleep(RESPONSE_DELAY_US);
@@ -807,11 +807,11 @@ namespace Motor{
                 std::cerr << e.what() << '\n';
             }
         }
-        this->JG(0x01, 0, false);
+        this->JG(motor_id, 0, false);
         usleep(10000);
-        this->CMR(0x01, -20, 0, false);
+        this->CMR(motor_id, -20, 0, false);
         usleep(10000);
-        this->CS(0x01, 0, 0, false);
+        this->CS(motor_id, 0, 0, false);
         usleep(10000);
 
         // 我覺得可以加入一個計時器，時間內沒有完成校正，就直接報錯。
