@@ -819,6 +819,163 @@ namespace Motor{
         return true;
     }
 
+    std::vector<double> MotorDriver::get_motors_data(std::vector<uint8_t> drive_motors_id_list, std::vector<uint8_t> steer_motors_id_list){
+        /*
+            * 先發送 Multi_NULL ，收轉向（位置）資料。
+        */
+        const int multi_null_expected_bytes = 8*steer_motors_id_list.size();
+        this->Multi_NULL(steer_motors_id_list.size(), steer_motors_id_list, true);
+        std::vector<char> multi_null_response;
+        {
+            usleep(RESPONSE_DELAY_US);
+            try
+            {
+                multi_null_response = asyncRead(multi_null_expected_bytes);
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+        }
+        // 轉向輪位置
+        double steer_index_1, steer_index_2;
+        union unionType steer_index_bit_1;
+        steer_index_bit_1.data_byte[1]    = multi_null_response.at(14);
+        steer_index_bit_1.data_byte[0]    = multi_null_response.at(15);
+        steer_index_1 = steer_index_bit_1.data;
+        
+        union unionType steer_index_bit_2;
+        steer_index_bit_2.data_byte[1]    = multi_null_response.at(14);
+        steer_index_bit_2.data_byte[0]    = multi_null_response.at(15);
+        steer_index_2 = steer_index_bit_2.data;
+
+        double steer_step_1, steer_step_2;
+        union unionType steer_step_bit_1;
+        steer_step_bit_1.data_byte[1]    = multi_null_response.at(14);
+        steer_step_bit_1.data_byte[0]    = multi_null_response.at(15);
+        steer_step_1 = steer_step_bit_1.data;
+        
+        union unionType steer_step_bit_2;
+        steer_step_bit_2.data_byte[1]    = multi_null_response.at(14);
+        steer_step_bit_2.data_byte[0]    = multi_null_response.at(15);
+        steer_step_2 = steer_step_bit_2.data;
+
+        /*
+            * 再發送 Multi_NULL_Lite，收行走（位置、速度、電壓、電流）、轉向（__、__、電壓、電流）資料。
+        */ 
+        const int multi_null_lite_expected_bytes = 20*(drive_motors_id_list.size()+steer_motors_id_list.size());
+        this->Multi_NULL_Lite(steer_motors_id_list.size(), steer_motors_id_list, true);
+        std::vector<char> multi_null_lite_response;
+        {
+            usleep(RESPONSE_DELAY_US);
+            try
+            {
+                multi_null_lite_response = asyncRead(multi_null_lite_expected_bytes);
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+        }
+
+        //行走輪位置
+        double drive_position_1, drive_position_2;
+        union unionType drive_position_bit_1;
+        drive_position_bit_1.data_byte[1]    = multi_null_lite_response.at(14);
+        drive_position_bit_1.data_byte[0]    = multi_null_lite_response.at(15);
+        drive_position_1 = drive_position_bit_1.data;
+        
+        union unionType drive_position_bit_2;
+        drive_position_bit_2.data_byte[1]    = multi_null_lite_response.at(14);
+        drive_position_bit_2.data_byte[0]    = multi_null_lite_response.at(15);
+        drive_position_2 = drive_position_bit_2.data;
+
+        //行走輪速度
+        double drive_velocity_1, drive_velocity_2;
+        union unionType drive_velocity_bit_1;
+        drive_velocity_bit_1.data_byte[1]    = multi_null_lite_response.at(14);
+        drive_velocity_bit_1.data_byte[0]    = multi_null_lite_response.at(15);
+        drive_velocity_1 = drive_velocity_bit_1.data;
+        
+        union unionType drive_velocity_bit_2;
+        drive_velocity_bit_2.data_byte[1]    = multi_null_lite_response.at(14);
+        drive_velocity_bit_2.data_byte[0]    = multi_null_lite_response.at(15);
+        drive_velocity_2 = drive_velocity_bit_2.data;
+
+        // 四輪電壓
+        double drive_voltage_1, drive_voltage_2;
+        union unionType drive_voltage_bit_1;
+        drive_voltage_bit_1.data_byte[1]    = multi_null_lite_response.at(14);
+        drive_voltage_bit_1.data_byte[0]    = multi_null_lite_response.at(15);
+        drive_voltage_1 = drive_voltage_bit_1.data*0.01;
+        
+        union unionType drive_voltage_bit_2;
+        drive_voltage_bit_2.data_byte[1]    = multi_null_lite_response.at(14);
+        drive_voltage_bit_2.data_byte[0]    = multi_null_lite_response.at(15);
+        drive_voltage_2 = drive_voltage_bit_2.data*0.01;
+
+        double steer_voltage_1, steer_voltage_2;
+        union unionType steer_voltage_bit_1;
+        steer_voltage_bit_1.data_byte[1]    = multi_null_lite_response.at(14);
+        steer_voltage_bit_1.data_byte[0]    = multi_null_lite_response.at(15);
+        steer_voltage_1 = steer_voltage_bit_1.data*0.01;
+        
+        union unionType steer_voltage_bit_2;
+        steer_voltage_bit_2.data_byte[1]    = multi_null_lite_response.at(14);
+        steer_voltage_bit_2.data_byte[0]    = multi_null_lite_response.at(15);
+        steer_voltage_2 = steer_voltage_bit_2.data*0.01;
+
+        // 四輪電流
+        double drive_current_1, drive_current_2;
+        union unionType drive_current_bit_1;
+        drive_current_bit_1.data_byte[1]    = multi_null_lite_response.at(14);
+        drive_current_bit_1.data_byte[0]    = multi_null_lite_response.at(15);
+        drive_current_1 = drive_current_bit_1.data*0.01;
+        
+        union unionType drive_current_bit_2;
+        drive_current_bit_2.data_byte[1]    = multi_null_lite_response.at(14);
+        drive_current_bit_2.data_byte[0]    = multi_null_lite_response.at(15);
+        drive_current_2 = drive_current_bit_2.data*0.01;
+
+        double steer_current_1, steer_current_2;
+        union unionType steer_current_bit_1;
+        steer_current_bit_1.data_byte[1]    = multi_null_lite_response.at(14);
+        steer_current_bit_1.data_byte[0]    = multi_null_lite_response.at(15);
+        steer_current_1 = steer_current_bit_1.data*0.01;
+        
+        union unionType steer_current_bit_2;
+        steer_current_bit_2.data_byte[1]    = multi_null_lite_response.at(14);
+        steer_current_bit_2.data_byte[0]    = multi_null_lite_response.at(15);
+        steer_current_2 = steer_current_bit_2.data*0.01;
+
+        /*
+            * 照順序（前行>後行>前轉>後轉）堆疊資料（行走-pos, vel, volt, cur）、（轉向-idx, stp, volt, cur）到向量中，輸出。
+        */ 
+       std::vector<double> motors_data;
+       motors_data.push_back(drive_position_1);
+       motors_data.push_back(drive_velocity_1);
+       motors_data.push_back(drive_voltage_1);
+       motors_data.push_back(drive_current_1);
+
+       motors_data.push_back(drive_position_2);
+       motors_data.push_back(drive_velocity_2);
+       motors_data.push_back(drive_voltage_2);
+       motors_data.push_back(drive_current_2);
+
+       motors_data.push_back(steer_index_1);
+       motors_data.push_back(steer_step_1);
+       motors_data.push_back(steer_voltage_1);
+       motors_data.push_back(steer_current_1);
+
+       motors_data.push_back(steer_index_2);
+       motors_data.push_back(steer_step_2);
+       motors_data.push_back(steer_voltage_2);
+       motors_data.push_back(steer_current_2);
+
+       return motors_data;
+    }
+    
+    
     void MotorDriver::Multi_ISTOP_Lite(uint8_t num, std::vector<uint8_t> id_list, bool is_echo){
 
         std::vector<uint8_t> p_data;

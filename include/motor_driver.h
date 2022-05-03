@@ -95,7 +95,9 @@ namespace Motor
         double get_encoder();
         double get_current();
         double get_voltage();
+        std::vector<double> get_motors_data(std::vector<uint8_t> drive_motors_id_list, std::vector<uint8_t> steer_motors_id_list);
         bool FindSteeringHome(uint8_t motor_id);
+
 
 
     public:
