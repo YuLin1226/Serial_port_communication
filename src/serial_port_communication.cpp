@@ -9,7 +9,7 @@ namespace Communication
 
     SerialPort::~SerialPort()
     {
-        close();
+        closeSerialPort();
     }
     
     void SerialPort::setParam(const std::string serial_port, const int baud_rate)
