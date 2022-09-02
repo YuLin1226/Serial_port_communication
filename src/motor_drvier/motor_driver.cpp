@@ -14,7 +14,7 @@ namespace AMR
     };
 
 
-    MotorDriver::MotorDriver(const std::string serial_port = "/dev/ttyUSB0", const int baud_rate = 115200):
+    MotorDriver::MotorDriver(const std::string serial_port, const int baud_rate):
     Communication::SerialPort(serial_port, baud_rate)
     {
         func_mutex_ = std::shared_ptr<boost::mutex>{new boost::mutex};

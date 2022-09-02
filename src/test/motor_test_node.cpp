@@ -8,7 +8,8 @@
 int main(int argc, char **argv)
 {
     // Create object pointer.
-    std::shared_ptr<AMR::MotorDriver> test_node_motor = std::make_shared<AMR::MotorDriver>(argc > 1 ? argv[1] : "/dev/ttyUSB0", 115200);
+    // std::shared_ptr<AMR::MotorDriver> test_node_motor = std::make_shared<AMR::MotorDriver>(argc > 1 ? argv[1] : "/dev/ttyUSB0", 115200);
+    std::shared_ptr<AMR::MotorDriver> test_node_motor = std::make_shared<AMR::MotorDriver>("/dev/pts/2", 9600);
 
     // Open serial port.
     test_node_motor->openSerialPort();
