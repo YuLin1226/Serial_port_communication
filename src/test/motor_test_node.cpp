@@ -20,11 +20,11 @@ int main(int argc, char **argv)
     test_node_motor->enableMotorDriver();
     sleep(5);
 
-    // // test_node_motor->velocityControl();
-    // // sleep(5);
+    test_node_motor->velocityControl();
+    sleep(5);
 
-    // // test_node_motor->stopVelocityControl();
-    // // sleep(5);
+    test_node_motor->stopVelocityControl();
+    sleep(5);
 
     // Manually close serial port. Or you can alternatively let the destructor to do so.
     test_node_motor->closeSerialPort();

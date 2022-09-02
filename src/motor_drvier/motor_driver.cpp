@@ -93,7 +93,7 @@ namespace AMR
 
         data_uint8_vector.clear();
 
-        data_uint8_vector.push_back(0x01);
+        data_uint8_vector.push_back(0x02);
         data_uint8_vector.push_back(0x10);
         data_uint8_vector.push_back(0x44);
         data_uint8_vector.push_back(0x20);
@@ -109,7 +109,7 @@ namespace AMR
         convertUint8AndUint16 crc_code;
         crc_code.data16 = computeCRC16(data_uint8_vector);
         data_uint8_vector.push_back(crc_code.data8[0]);
-        data_uint8_vector.push_back(crc_code.data8[0]);
+        data_uint8_vector.push_back(crc_code.data8[1]);
         
         std::vector<char> data_char_vector(data_uint8_vector.begin(), data_uint8_vector.end());
         writeDataThroughSerialPort(data_char_vector);
@@ -174,7 +174,7 @@ namespace AMR
 
         data_uint8_vector.clear();
 
-        data_uint8_vector.push_back(0x01);
+        data_uint8_vector.push_back(0x02);
         data_uint8_vector.push_back(0x10);
         data_uint8_vector.push_back(0x44);
         data_uint8_vector.push_back(0x20);
@@ -190,7 +190,7 @@ namespace AMR
         convertUint8AndUint16 crc_code;
         crc_code.data16 = computeCRC16(data_uint8_vector);
         data_uint8_vector.push_back(crc_code.data8[0]);
-        data_uint8_vector.push_back(crc_code.data8[0]);
+        data_uint8_vector.push_back(crc_code.data8[1]);
         
         std::vector<char> data_char_vector(data_uint8_vector.begin(), data_uint8_vector.end());
         writeDataThroughSerialPort(data_char_vector);
