@@ -50,6 +50,14 @@ namespace AMR
 
 
         /**
+         * @brief Tonyi driver command
+         */
+        void velocityControl();
+        void stopVelocityControl();
+        void enableMotorDriver();
+
+
+        /**
          * @brief Computation of crc check code.
          * @param data_vector The data vector used to compute crc16 check code.
          */

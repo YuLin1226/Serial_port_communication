@@ -87,8 +87,86 @@ namespace AMR
     }
 
 
+    void MotorDriver::velocityControl()
+    {
+        std::vector<uint8_t> data_uint8_vector;
 
+        data_uint8_vector.clear();
 
+        data_uint8_vector.push_back(0x01);
+        data_uint8_vector.push_back(0x10);
+        data_uint8_vector.push_back(0x44);
+        data_uint8_vector.push_back(0x20);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x02);
+        data_uint8_vector.push_back(0x04);
+        // following 4 push_back are vel data.
+        data_uint8_vector.push_back(0x03);
+        data_uint8_vector.push_back(0xE8);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x00);
+
+        convertUint8AndUint16 crc_code;
+        crc_code.data16 = computeCRC16(data_uint8_vector);
+        data_uint8_vector.push_back(crc_code.data8[0]);
+        data_uint8_vector.push_back(crc_code.data8[0]);
+        
+        std::vector<char> data_char_vector(data_uint8_vector.begin(), data_uint8_vector.end());
+        writeDataThroughSerialPort(data_char_vector);
+    }
+
+    void MotorDriver::enableMotorDriver()
+    {
+        std::vector<uint8_t> data_uint8_vector;
+
+        data_uint8_vector.clear();
+
+        data_uint8_vector.push_back(0x01);
+        data_uint8_vector.push_back(0x10);
+        data_uint8_vector.push_back(0x46);
+        data_uint8_vector.push_back(0x57);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x01);
+        data_uint8_vector.push_back(0x02);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x01);
+
+        convertUint8AndUint16 crc_code;
+        crc_code.data16 = computeCRC16(data_uint8_vector);
+        data_uint8_vector.push_back(crc_code.data8[0]);
+        data_uint8_vector.push_back(crc_code.data8[0]);
+        
+        std::vector<char> data_char_vector(data_uint8_vector.begin(), data_uint8_vector.end());
+        writeDataThroughSerialPort(data_char_vector);
+    }
+
+    void MotorDriver::stopVelocityControl()
+    {
+        std::vector<uint8_t> data_uint8_vector;
+
+        data_uint8_vector.clear();
+
+        data_uint8_vector.push_back(0x01);
+        data_uint8_vector.push_back(0x10);
+        data_uint8_vector.push_back(0x44);
+        data_uint8_vector.push_back(0x20);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x02);
+        data_uint8_vector.push_back(0x04);
+        // following 4 push_back are vel data.
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x00);
+
+        convertUint8AndUint16 crc_code;
+        crc_code.data16 = computeCRC16(data_uint8_vector);
+        data_uint8_vector.push_back(crc_code.data8[0]);
+        data_uint8_vector.push_back(crc_code.data8[0]);
+        
+        std::vector<char> data_char_vector(data_uint8_vector.begin(), data_uint8_vector.end());
+        writeDataThroughSerialPort(data_char_vector);
+    }
 
 
 
