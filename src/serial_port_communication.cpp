@@ -2,7 +2,7 @@
 
 namespace Communication
 {
-    SerialPort::SerialPort(const std::string serial_port = "/dev/ttyUSB0", const int baud_rate = 115200)
+    SerialPort::SerialPort(const std::string serial_port, const int baud_rate)
     {
         setParam(serial_port, baud_rate);
     }
@@ -14,8 +14,8 @@ namespace Communication
     
     void SerialPort::setParam(const std::string serial_port, const int baud_rate)
     {
-        serial_port_   = serial_port_;
-        baud_rate_     = baud_rate_;
+        serial_port_   = serial_port;
+        baud_rate_     = baud_rate;
     }
 
     int SerialPort::openSerialPort()
@@ -113,11 +113,14 @@ namespace Communication
                                 data_available_ = false;
                                 std::cerr << ">>> readCallback Error " << error << std::endl;
                             }
+                            else
+                            {
+                                data_available_ = true;
+                            }
                             timeout_->cancel();
-                            data_available_ = true;
                         });
             timeout_->expires_from_now(boost::posix_time::millisec(READ_TIME_OUT_MS));
-            timeout_->async_wait(  [&](const boost::system::error_code &error)
+            timeout_->async_wait(   [&](const boost::system::error_code &error)
                                     {
                                         if (!error)
                                         {
