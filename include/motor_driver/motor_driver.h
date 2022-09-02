@@ -55,6 +55,8 @@ namespace AMR
         void velocityControl();
         void stopVelocityControl();
         void enableMotorDriver();
+        void positionGoHome();
+        void positionControl();
 
 
         /**

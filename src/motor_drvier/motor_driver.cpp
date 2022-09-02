@@ -152,7 +152,7 @@ namespace AMR
             usleep(Communication::RESPONSE_DELAY_US);
             try
             {
-                const int expected_bytes = 4;
+                const int expected_bytes = 8;
                 data_received = asyncReadDataThroughSerialPort(expected_bytes);
                 std::cout << "Received Command: ";
                 for (auto i = 0; i < data_received.size(); i++)
@@ -194,6 +194,103 @@ namespace AMR
         
         std::vector<char> data_char_vector(data_uint8_vector.begin(), data_uint8_vector.end());
         writeDataThroughSerialPort(data_char_vector);
+    }
+
+    void MotorDriver::positionGoHome()
+    {
+        std::vector<uint8_t> data_uint8_vector;
+
+        data_uint8_vector.clear();
+
+        data_uint8_vector.push_back(0x01);
+        data_uint8_vector.push_back(0x10);
+        data_uint8_vector.push_back(0x44);
+        data_uint8_vector.push_back(0x8F);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x01);
+        data_uint8_vector.push_back(0x02);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x01);
+
+        convertUint8AndUint16 crc_code;
+        crc_code.data16 = computeCRC16(data_uint8_vector);
+        data_uint8_vector.push_back(crc_code.data8[0]);
+        data_uint8_vector.push_back(crc_code.data8[1]);
+        
+        std::vector<char> data_char_vector(data_uint8_vector.begin(), data_uint8_vector.end());
+        writeDataThroughSerialPort(data_char_vector);
+    }
+
+    void MotorDriver::positionControl()
+    {
+        std::vector<uint8_t> data_uint8_vector;
+
+        data_uint8_vector.clear();
+
+        data_uint8_vector.push_back(0x01);
+        data_uint8_vector.push_back(0x10);
+        data_uint8_vector.push_back(0x43);
+        data_uint8_vector.push_back(0xC6);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x02);
+        data_uint8_vector.push_back(0x04);
+        data_uint8_vector.push_back(0x7F);
+        data_uint8_vector.push_back(0xFF);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x05);
+
+        convertUint8AndUint16 crc_code;
+        crc_code.data16 = computeCRC16(data_uint8_vector);
+        data_uint8_vector.push_back(crc_code.data8[0]);
+        data_uint8_vector.push_back(crc_code.data8[1]);
+        
+        std::vector<char> data_char_vector(data_uint8_vector.begin(), data_uint8_vector.end());
+        writeDataThroughSerialPort(data_char_vector);
+
+        // |Above| set position
+        // sleep between 2 commands 
+        // |Below| start move
+        usleep(Communication::RESPONSE_DELAY_US);
+
+        data_uint8_vector.clear();
+
+        data_uint8_vector.push_back(0x01);
+        data_uint8_vector.push_back(0x10);
+        data_uint8_vector.push_back(0x43);
+        data_uint8_vector.push_back(0xBF);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x01);
+        data_uint8_vector.push_back(0x02);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x01);
+
+        convertUint8AndUint16 crc_code;
+        crc_code.data16 = computeCRC16(data_uint8_vector);
+        data_uint8_vector.push_back(crc_code.data8[0]);
+        data_uint8_vector.push_back(crc_code.data8[1]);
+        
+        std::vector<char> data_char_vector(data_uint8_vector.begin(), data_uint8_vector.end());
+        writeDataThroughSerialPort(data_char_vector);
+
+        std::vector<char> data_received;
+        {
+            usleep(Communication::RESPONSE_DELAY_US);
+            try
+            {
+                const int expected_bytes = 8;
+                data_received = asyncReadDataThroughSerialPort(expected_bytes);
+                std::cout << "Received Command: ";
+                for (auto i = 0; i < data_received.size(); i++)
+                {
+                    std::cout << std::hex << (int)data_received[i] << " ";
+                }
+                std::cout << std::endl;
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+        }
     }
 
 
