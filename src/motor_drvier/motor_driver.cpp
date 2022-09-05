@@ -121,7 +121,7 @@ namespace AMR
 
         data_uint8_vector.clear();
 
-        data_uint8_vector.push_back(0x02);
+        data_uint8_vector.push_back(0x03);
         data_uint8_vector.push_back(0x10);
         data_uint8_vector.push_back(0x46);
         data_uint8_vector.push_back(0x57);
@@ -202,7 +202,7 @@ namespace AMR
 
         data_uint8_vector.clear();
 
-        data_uint8_vector.push_back(0x01);
+        data_uint8_vector.push_back(0x03);
         data_uint8_vector.push_back(0x10);
         data_uint8_vector.push_back(0x44);
         data_uint8_vector.push_back(0x8F);
@@ -227,17 +227,17 @@ namespace AMR
 
         data_uint8_vector.clear();
 
-        data_uint8_vector.push_back(0x01);
+        data_uint8_vector.push_back(0x03);
         data_uint8_vector.push_back(0x10);
         data_uint8_vector.push_back(0x43);
         data_uint8_vector.push_back(0xC6);
         data_uint8_vector.push_back(0x00);
         data_uint8_vector.push_back(0x02);
         data_uint8_vector.push_back(0x04);
-        data_uint8_vector.push_back(0x7F);
-        data_uint8_vector.push_back(0xFF);
         data_uint8_vector.push_back(0x00);
-        data_uint8_vector.push_back(0x05);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x00);
 
         convertUint8AndUint16 crc_code;
         crc_code.data16 = computeCRC16(data_uint8_vector);
@@ -246,15 +246,22 @@ namespace AMR
         
         std::vector<char> data_char_vector(data_uint8_vector.begin(), data_uint8_vector.end());
         writeDataThroughSerialPort(data_char_vector);
+        std::cout << "Send Command (Pos set): ";
+        for (auto i = 0; i < data_char_vector.size(); i++)
+        {
+            std::cout << std::hex << (int)data_char_vector[i] << " ";
+        }
+        std::cout << std::endl;
 
         // |Above| set position
         // sleep between 2 commands 
         // |Below| start move
-        usleep(Communication::RESPONSE_DELAY_US);
+        usleep(25000);
+        // sleep(1);
 
         data_uint8_vector.clear();
 
-        data_uint8_vector.push_back(0x01);
+        data_uint8_vector.push_back(0x03);
         data_uint8_vector.push_back(0x10);
         data_uint8_vector.push_back(0x43);
         data_uint8_vector.push_back(0xBF);
@@ -264,13 +271,19 @@ namespace AMR
         data_uint8_vector.push_back(0x00);
         data_uint8_vector.push_back(0x01);
 
-        convertUint8AndUint16 crc_code;
         crc_code.data16 = computeCRC16(data_uint8_vector);
         data_uint8_vector.push_back(crc_code.data8[0]);
         data_uint8_vector.push_back(crc_code.data8[1]);
         
-        std::vector<char> data_char_vector(data_uint8_vector.begin(), data_uint8_vector.end());
+        data_char_vector.assign(data_uint8_vector.begin(), data_uint8_vector.end());
         writeDataThroughSerialPort(data_char_vector);
+        std::cout << "Send Command (Pos start): ";
+        for (auto i = 0; i < data_char_vector.size(); i++)
+        {
+            std::cout << std::hex << (int)data_char_vector[i] << " ";
+        }
+        std::cout << std::endl;
+
 
         std::vector<char> data_received;
         {
