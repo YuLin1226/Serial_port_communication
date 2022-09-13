@@ -17,12 +17,89 @@ namespace AMR
     MotorDriver::MotorDriver(const std::string serial_port, const int baud_rate):
     Communication::SerialPort(serial_port, baud_rate)
     {
-        func_mutex_ = std::shared_ptr<boost::mutex>{new boost::mutex};
+        thread_ = std::thread([this]()
+        {
+            setRunning(true);
+            thread_body();
+        });
     }
 
     MotorDriver::~MotorDriver()
     {
+        stop();
+    }
 
+    void MotorDriver::thread_body()
+    {
+        while(getRunning())
+        {
+            if(cmd_ == CMD_NUMBER::doNothing)
+            {
+            }
+            else if(cmd_ == CMD_NUMBER::enableServo)
+            {
+                std::lock_guard<std::mutex> lock(mtx_);
+
+                
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+            else if(cmd_ == CMD_NUMBER::velocityControl)
+            {
+                std::lock_guard<std::mutex> lock(mtx_);
+                
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+            else if(cmd_ == CMD_NUMBER::positionControl)
+            {
+                std::lock_guard<std::mutex> lock(mtx_);
+                
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+            else if(cmd_ == CMD_NUMBER::readEncoder)
+            {
+                std::lock_guard<std::mutex> lock(mtx_);
+                
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                {
+                    try
+                    {
+                        const int expected_bytes = 8;
+                        read_data_vector_ = asyncReadDataThroughSerialPort(expected_bytes);
+                        std::cout << "Received Command: ";
+                        for (auto i = 0; i < read_data_vector_.size(); i++)
+                        {
+                            std::cout << std::hex << (int)read_data_vector_[i] << " ";
+                        }
+                        std::cout << std::endl;
+                    }
+                    catch(const std::exception& e)
+                    {
+                        std::cerr << e.what() << '\n';
+                    }
+                }
+            }
+            write_data_vector_.clear();
+            cmd_ = CMD_NUMBER::doNothing;
+        }
+        std::cout << ">>> Thread body is finished" << std::endl;
+    }
+
+    void MotorDriver::setRunning(bool running)
+    {
+        std::lock_guard<std::mutex> lock(mtx_);
+        running_ = running;
+    }
+
+    bool MotorDriver::getRunning()
+    {
+        std::lock_guard<std::mutex> lock(mtx_);
+        return running_;
+    }
+
+    void MotorDriver::stop()
+    {
+        setRunning(false);
+        thread_.join();
     }
 
     void MotorDriver::exampleModbusCommand(uint16_t data)

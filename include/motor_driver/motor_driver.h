@@ -1,4 +1,7 @@
 #include "../serial_port_communication.h"
+#include <thread>
+#include <mutex>
+
 
 #ifndef _MOTOR_DRIVER_H
 #define _MOTOR_DRIVER_H
@@ -9,7 +12,6 @@ namespace AMR
     class MotorDriver : public Communication::SerialPort
     {
     private:
-        std::shared_ptr<boost::mutex> func_mutex_;
 
         const uint8_t example_broadcast_       = 0x00;
         const uint8_t exmaple_number_          = 0x01;
@@ -20,8 +22,32 @@ namespace AMR
 
         const int rcv_size                  =    8;
 
+        std::thread thread_;
+        std::mutex mtx_;
+        bool running_;
+
+        void setRunning(bool running);
+        bool getRunning();
+        void thread_body();
+        void stop();
+
+        std::vector<char> write_data_vector_;
+        std::vector<char> read_data_vector_;
+        
 
     public:
+
+        enum class CMD_NUMBER
+        {
+            doNothing,
+            enableServo,
+            velocityControl,
+            positionControl,
+            readEncoder
+        };
+        CMD_NUMBER cmd_;
+
+
         /**
          * @brief Constructor.
          * @param serial_port port name, e.g. "/dev/ttyUSB0".
@@ -58,6 +84,7 @@ namespace AMR
         void positionGoHome(uint8_t id);
         void positionControl(uint8_t id);
         void readEncoder(uint8_t id);
+
 
 
         /**
