@@ -306,6 +306,48 @@ namespace AMR
         }
     }
 
+    void MotorDriver::readEncoder(uint8_t id)
+    {
+        std::vector<uint8_t> data_uint8_vector;
+
+        data_uint8_vector.clear();
+
+        data_uint8_vector.push_back(id);
+        data_uint8_vector.push_back(0x03);
+        data_uint8_vector.push_back(0x42);
+        data_uint8_vector.push_back(0xFF);
+        data_uint8_vector.push_back(0x00);
+        data_uint8_vector.push_back(0x02);
+
+        convertUint8AndUint16 crc_code;
+        crc_code.data16 = computeCRC16(data_uint8_vector);
+        data_uint8_vector.push_back(crc_code.data8[0]);
+        data_uint8_vector.push_back(crc_code.data8[1]);
+        
+        std::vector<char> data_char_vector(data_uint8_vector.begin(), data_uint8_vector.end());
+        writeDataThroughSerialPort(data_char_vector);
+
+        std::vector<char> data_received;
+        {
+            usleep(Communication::RESPONSE_DELAY_US);
+            try
+            {
+                const int expected_bytes = 9;
+                data_received = asyncReadDataThroughSerialPort(expected_bytes);
+                std::cout << "Received Command: ";
+                for (auto i = 0; i < data_received.size(); i++)
+                {
+                    std::cout << std::hex << (int)data_received[i] << " ";
+                }
+                std::cout << std::endl;
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+        }
+    }
+
 
 
 }

@@ -57,6 +57,7 @@ namespace AMR
         void enableMotorDriver(uint8_t id);
         void positionGoHome(uint8_t id);
         void positionControl(uint8_t id);
+        void readEncoder(uint8_t id);
 
 
         /**

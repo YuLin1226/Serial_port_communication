@@ -31,6 +31,10 @@ int main(int argc, char **argv)
     // sleep(5);
 
     // test_node_motor->positionControl(id);
+    // sleep(5);
+    
+    test_node_motor->readEncoder(id);
+    sleep(1);
 
     // Manually close serial port. Or you can alternatively let the destructor to do so.
     test_node_motor->closeSerialPort();
