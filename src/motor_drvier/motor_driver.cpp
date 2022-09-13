@@ -87,13 +87,13 @@ namespace AMR
     }
 
 
-    void MotorDriver::velocityControl()
+    void MotorDriver::velocityControl(uint8_t id)
     {
         std::vector<uint8_t> data_uint8_vector;
 
         data_uint8_vector.clear();
 
-        data_uint8_vector.push_back(0x02);
+        data_uint8_vector.push_back(id);
         data_uint8_vector.push_back(0x10);
         data_uint8_vector.push_back(0x44);
         data_uint8_vector.push_back(0x20);
@@ -115,13 +115,13 @@ namespace AMR
         writeDataThroughSerialPort(data_char_vector);
     }
 
-    void MotorDriver::enableMotorDriver()
+    void MotorDriver::enableMotorDriver(uint8_t id)
     {
         std::vector<uint8_t> data_uint8_vector;
 
         data_uint8_vector.clear();
 
-        data_uint8_vector.push_back(0x03);
+        data_uint8_vector.push_back(id);
         data_uint8_vector.push_back(0x10);
         data_uint8_vector.push_back(0x46);
         data_uint8_vector.push_back(0x57);
@@ -168,13 +168,13 @@ namespace AMR
         }
     }
 
-    void MotorDriver::stopVelocityControl()
+    void MotorDriver::stopVelocityControl(uint8_t id)
     {
         std::vector<uint8_t> data_uint8_vector;
 
         data_uint8_vector.clear();
 
-        data_uint8_vector.push_back(0x02);
+        data_uint8_vector.push_back(id);
         data_uint8_vector.push_back(0x10);
         data_uint8_vector.push_back(0x44);
         data_uint8_vector.push_back(0x20);
@@ -196,13 +196,13 @@ namespace AMR
         writeDataThroughSerialPort(data_char_vector);
     }
 
-    void MotorDriver::positionGoHome()
+    void MotorDriver::positionGoHome(uint8_t id)
     {
         std::vector<uint8_t> data_uint8_vector;
 
         data_uint8_vector.clear();
 
-        data_uint8_vector.push_back(0x03);
+        data_uint8_vector.push_back(id);
         data_uint8_vector.push_back(0x10);
         data_uint8_vector.push_back(0x44);
         data_uint8_vector.push_back(0x8F);
@@ -221,13 +221,13 @@ namespace AMR
         writeDataThroughSerialPort(data_char_vector);
     }
 
-    void MotorDriver::positionControl()
+    void MotorDriver::positionControl(uint8_t id)
     {
         std::vector<uint8_t> data_uint8_vector;
 
         data_uint8_vector.clear();
 
-        data_uint8_vector.push_back(0x03);
+        data_uint8_vector.push_back(id);
         data_uint8_vector.push_back(0x10);
         data_uint8_vector.push_back(0x43);
         data_uint8_vector.push_back(0xC6);

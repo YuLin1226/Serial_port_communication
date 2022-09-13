@@ -52,11 +52,11 @@ namespace AMR
         /**
          * @brief Tonyi driver command
          */
-        void velocityControl();
-        void stopVelocityControl();
-        void enableMotorDriver();
-        void positionGoHome();
-        void positionControl();
+        void velocityControl(uint8_t id);
+        void stopVelocityControl(uint8_t id);
+        void enableMotorDriver(uint8_t id);
+        void positionGoHome(uint8_t id);
+        void positionControl(uint8_t id);
 
 
         /**

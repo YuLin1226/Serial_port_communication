@@ -13,20 +13,24 @@ int main(int argc, char **argv)
     // std::shared_ptr<AMR::MotorDriver> test_node_motor = std::make_shared<AMR::MotorDriver>(argc > 1 ? argv[1] : "/dev/ttyUSB0", 115200);
     std::shared_ptr<AMR::MotorDriver> test_node_motor = std::make_shared<AMR::MotorDriver>(port, baud_rate);
 
+
+    uint8_t id = 0x01;
+
+
     // // Open serial port.
     test_node_motor->openSerialPort();
 
     
-    test_node_motor->enableMotorDriver();
+    test_node_motor->enableMotorDriver(id);
     sleep(1);
 
-    // test_node_motor->velocityControl();
+    // test_node_motor->velocityControl(id);
     // sleep(5);
 
-    // test_node_motor->stopVelocityControl();
+    // test_node_motor->stopVelocityControl(id);
     // sleep(5);
 
-    test_node_motor->positionControl();
+    // test_node_motor->positionControl(id);
 
     // Manually close serial port. Or you can alternatively let the destructor to do so.
     test_node_motor->closeSerialPort();
