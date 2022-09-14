@@ -60,6 +60,7 @@ namespace AMR
                 if(!write_data_vector_.empty())
                 {
                     writeDataThroughSerialPort(write_data_vector_);
+                    write_data_vector_.clear();
                     std::this_thread::sleep_for(std::chrono::microseconds(Communication::RESPONSE_DELAY_US));
                     try
                     {
@@ -73,7 +74,7 @@ namespace AMR
                 }
                 std::this_thread::sleep_for(std::chrono::seconds(2));
             }
-            write_data_vector_.clear();
+            
             cmd_ = CMD_NUMBER::doNothing;
         }
         std::cout << ">>> Thread body is finished" << std::endl;
