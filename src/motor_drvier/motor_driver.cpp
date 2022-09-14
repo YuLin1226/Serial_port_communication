@@ -57,32 +57,20 @@ namespace AMR
             else if(cmd_ == CMD_NUMBER::readEncoder)
             {
                 std::lock_guard<std::mutex> lock(mtx_);
-                // std::cout << "Send Command: ";
-                // for(auto i=0; i<write_data_vector_.size(); i++)
-                // {
-                //     std::cout << std::hex << (int)write_data_vector_[i] << " ";
-                // }
-                // std::cout << std::endl;
-                writeDataThroughSerialPort(write_data_vector_);
-                std::this_thread::sleep_for(std::chrono::microseconds(Communication::RESPONSE_DELAY_US));
+                if(!write_data_vector_.empty())
                 {
+                    writeDataThroughSerialPort(write_data_vector_);
+                    std::this_thread::sleep_for(std::chrono::microseconds(Communication::RESPONSE_DELAY_US));
                     try
                     {
                         const int expected_bytes = 8;
                         read_data_vector_ = asyncReadDataThroughSerialPort(expected_bytes);
-                        // std::cout << "Received Command: ";
-                        // for (auto i = 0; i < read_data_vector_.size(); i++)
-                        // {
-                        //     std::cout << std::hex << (int)read_data_vector_[i] << " ";
-                        // }
-                        // std::cout << std::endl;
                     }
                     catch(const std::exception& e)
                     {
                         std::cerr << e.what() << '\n';
                     }
                 }
-                // std::cout << "now sleep for 2 seconds.\n";
                 std::this_thread::sleep_for(std::chrono::seconds(2));
             }
             write_data_vector_.clear();
@@ -418,14 +406,16 @@ namespace AMR
         data_uint8_vector.push_back(crc_code.data8[1]);
     
         write_data_vector_.assign(data_uint8_vector.begin(), data_uint8_vector.end());
-        cmd_ = CMD_NUMBER::readEncoder;
-
+        
         std::cout << "Send Command: ";
         for(auto i=0; i<write_data_vector_.size(); i++)
         {
             std::cout << std::hex << (int)write_data_vector_[i] << " ";
         }
         std::cout << std::endl;
+
+        cmd_ = CMD_NUMBER::readEncoder;
+
 
 
         // writeDataThroughSerialPort(data_char_vector);
