@@ -26,10 +26,9 @@ int main(int argc, char **argv)
     
     test_node_motor1->readEncoder(id1);
     test_node_motor2->readEncoder(id2);
-    sleep(1);
+    sleep(3);
 
     test_node_motor1->printReadBuf();
-    sleep(1);
     test_node_motor2->printReadBuf();
 
     // Manually close serial port. Or you can alternatively let the destructor to do so.

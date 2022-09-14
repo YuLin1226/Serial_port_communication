@@ -61,16 +61,26 @@ namespace AMR
                 {
                     writeDataThroughSerialPort(write_data_vector_);
                     write_data_vector_.clear();
-                    std::this_thread::sleep_for(std::chrono::microseconds(Communication::RESPONSE_DELAY_US));
+                    // std::this_thread::sleep_for(std::chrono::microseconds(Communication::RESPONSE_DELAY_US));
                     try
                     {
-                        const int expected_bytes = 8;
+                        const int expected_bytes = 9;
                         read_data_vector_ = asyncReadDataThroughSerialPort(expected_bytes);
+                        std::cout << "Received Data: ";
+                        for (auto i = 0; i < read_data_vector_.size(); i++)
+                        {
+                            std::cout << std::hex << (int)read_data_vector_[i] << " ";
+                        }
+                        std::cout << std::endl;
                     }
                     catch(const std::exception& e)
                     {
                         std::cerr << e.what() << '\n';
                     }
+                }
+                else
+                {
+                    std::cout << "empty write data vector.\n";
                 }
                 std::this_thread::sleep_for(std::chrono::seconds(2));
             }
@@ -82,12 +92,19 @@ namespace AMR
 
     void MotorDriver::printReadBuf()
     {
-        std::cout << "Received Command: ";
-        for (auto i = 0; i < read_data_vector_.size(); i++)
+        if(read_data_vector_.empty())
         {
-            std::cout << std::hex << (int)read_data_vector_[i] << " ";
+            std::cout << "No received data.\n";
         }
-        std::cout << std::endl;
+        else
+        {
+            std::cout << "Received Data: ";
+            for (auto i = 0; i < read_data_vector_.size(); i++)
+            {
+                std::cout << std::hex << (int)read_data_vector_[i] << " ";
+            }
+            std::cout << std::endl;
+        }
     }
 
     void MotorDriver::setRunning(bool running)
