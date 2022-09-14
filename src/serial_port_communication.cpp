@@ -137,6 +137,7 @@ namespace Communication
         }
         if (data_available_)
         {
+            std::cout << ">>> Read successfully. \n";
             return char_vector;
         }
         else
