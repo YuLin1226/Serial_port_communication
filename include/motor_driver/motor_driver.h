@@ -37,6 +37,8 @@ namespace AMR
 
     public:
 
+        void printReadBuf();
+
         enum class CMD_NUMBER
         {
             doNothing,
