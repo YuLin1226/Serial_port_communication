@@ -56,6 +56,7 @@ namespace AMR
             }
             else if(cmd_ == CMD_NUMBER::readEncoder)
             {
+                std::this_thread::sleep_for(std::chrono::seconds(1));
                 std::lock_guard<std::mutex> lock(mtx_);
                 std::cout << "Send Command: ";
                 for(auto i=0; i<write_data_vector_.size(); i++)
@@ -64,7 +65,7 @@ namespace AMR
                 }
                 std::cout << std::endl;
                 writeDataThroughSerialPort(write_data_vector_);
-                std::this_thread::sleep_for(std::chrono::seconds(1));
+                std::this_thread::sleep_for(std::chrono::microseconds(Communication::RESPONSE_DELAY_US));
                 {
                     try
                     {
