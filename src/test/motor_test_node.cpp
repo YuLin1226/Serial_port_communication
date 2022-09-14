@@ -7,37 +7,30 @@
 
 int main(int argc, char **argv)
 {
-    std::string port = "/dev/ttyUSB0";
+    std::string port1 = "/dev/ttyS1";
+    std::string port2 = "/dev/ttyS0";
     int baud_rate = 9600;
     // Create object pointer.
     // std::shared_ptr<AMR::MotorDriver> test_node_motor = std::make_shared<AMR::MotorDriver>(argc > 1 ? argv[1] : "/dev/ttyUSB0", 115200);
-    std::shared_ptr<AMR::MotorDriver> test_node_motor = std::make_shared<AMR::MotorDriver>(port, baud_rate);
+    std::shared_ptr<AMR::MotorDriver> test_node_motor1 = std::make_shared<AMR::MotorDriver>(port1, baud_rate);
+    std::shared_ptr<AMR::MotorDriver> test_node_motor2 = std::make_shared<AMR::MotorDriver>(port2, baud_rate);
 
-
-    uint8_t id = 0x01;
-
+    uint8_t id1 = 0x01;
+    uint8_t id2 = 0x02;
 
     // // Open serial port.
-    test_node_motor->openSerialPort();
+    test_node_motor1->openSerialPort();
+    test_node_motor2->openSerialPort();
 
     
-    test_node_motor->enableMotorDriver(id);
-    sleep(1);
-
-    // test_node_motor->velocityControl(id);
-    // sleep(5);
-
-    // test_node_motor->stopVelocityControl(id);
-    // sleep(5);
-
-    // test_node_motor->positionControl(id);
-    // sleep(5);
     
-    test_node_motor->readEncoder(id);
+    test_node_motor1->readEncoder(id1);
+    test_node_motor2->readEncoder(id2);
     sleep(1);
 
     // Manually close serial port. Or you can alternatively let the destructor to do so.
-    test_node_motor->closeSerialPort();
+    test_node_motor1->closeSerialPort();
+    test_node_motor2->closeSerialPort();
     return 0;
 }
 

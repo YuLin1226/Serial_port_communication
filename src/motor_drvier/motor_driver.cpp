@@ -15,7 +15,7 @@ namespace AMR
 
 
     MotorDriver::MotorDriver(const std::string serial_port, const int baud_rate):
-    Communication::SerialPort(serial_port, baud_rate)
+    Communication::SerialPort(serial_port, baud_rate), cmd_(CMD_NUMBER::doNothing)
     {
         thread_ = std::thread([this]()
         {
@@ -39,26 +39,31 @@ namespace AMR
             else if(cmd_ == CMD_NUMBER::enableServo)
             {
                 std::lock_guard<std::mutex> lock(mtx_);
-
-                
+                writeDataThroughSerialPort(write_data_vector_);
                 std::this_thread::sleep_for(std::chrono::seconds(1));
             }
             else if(cmd_ == CMD_NUMBER::velocityControl)
             {
                 std::lock_guard<std::mutex> lock(mtx_);
-                
+                writeDataThroughSerialPort(write_data_vector_);
                 std::this_thread::sleep_for(std::chrono::seconds(1));
             }
             else if(cmd_ == CMD_NUMBER::positionControl)
             {
                 std::lock_guard<std::mutex> lock(mtx_);
-                
+                writeDataThroughSerialPort(write_data_vector_);
                 std::this_thread::sleep_for(std::chrono::seconds(1));
             }
             else if(cmd_ == CMD_NUMBER::readEncoder)
             {
                 std::lock_guard<std::mutex> lock(mtx_);
-                
+                std::cout << "Send Command: ";
+                for(auto i=0; i<write_data_vector_.size(); i++)
+                {
+                    std::cout << std::hex << (int)write_data_vector_[i] << " ";
+                }
+                std::cout << std::endl;
+                writeDataThroughSerialPort(write_data_vector_);
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 {
                     try
@@ -388,7 +393,6 @@ namespace AMR
         std::vector<uint8_t> data_uint8_vector;
 
         data_uint8_vector.clear();
-
         data_uint8_vector.push_back(id);
         data_uint8_vector.push_back(0x03);
         data_uint8_vector.push_back(0x42);
@@ -400,29 +404,32 @@ namespace AMR
         crc_code.data16 = computeCRC16(data_uint8_vector);
         data_uint8_vector.push_back(crc_code.data8[0]);
         data_uint8_vector.push_back(crc_code.data8[1]);
-        
-        std::vector<char> data_char_vector(data_uint8_vector.begin(), data_uint8_vector.end());
-        writeDataThroughSerialPort(data_char_vector);
+    
+        write_data_vector_.assign(data_uint8_vector.begin(), data_uint8_vector.end());
+        cmd_ = CMD_NUMBER::readEncoder;
 
-        std::vector<char> data_received;
-        {
-            usleep(Communication::RESPONSE_DELAY_US);
-            try
-            {
-                const int expected_bytes = 9;
-                data_received = asyncReadDataThroughSerialPort(expected_bytes);
-                std::cout << "Received Command: ";
-                for (auto i = 0; i < data_received.size(); i++)
-                {
-                    std::cout << std::hex << (int)data_received[i] << " ";
-                }
-                std::cout << std::endl;
-            }
-            catch(const std::exception& e)
-            {
-                std::cerr << e.what() << '\n';
-            }
-        }
+
+        // writeDataThroughSerialPort(data_char_vector);
+
+        // std::vector<char> data_received;
+        // {
+        //     usleep(Communication::RESPONSE_DELAY_US);
+        //     try
+        //     {
+        //         const int expected_bytes = 9;
+        //         data_received = asyncReadDataThroughSerialPort(expected_bytes);
+        //         std::cout << "Received Command: ";
+        //         for (auto i = 0; i < data_received.size(); i++)
+        //         {
+        //             std::cout << std::hex << (int)data_received[i] << " ";
+        //         }
+        //         std::cout << std::endl;
+        //     }
+        //     catch(const std::exception& e)
+        //     {
+        //         std::cerr << e.what() << '\n';
+        //     }
+        // }
     }
 
 
