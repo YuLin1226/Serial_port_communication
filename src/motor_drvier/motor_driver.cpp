@@ -166,6 +166,8 @@ namespace AMR
                 std::cerr << e.what() << '\n';
             }
         }
+        std::cout << "now sleep for 2 seconds.\n";
+        sleep(2);
     }
 
     void MotorDriver::stopVelocityControl(uint8_t id)
@@ -325,6 +327,12 @@ namespace AMR
         data_uint8_vector.push_back(crc_code.data8[1]);
         
         std::vector<char> data_char_vector(data_uint8_vector.begin(), data_uint8_vector.end());
+        std::cout << "Send Command: ";
+        for (auto i = 0; i < data_char_vector.size(); i++)
+        {
+            std::cout << std::hex << (int)data_char_vector[i] << " ";
+        }
+        std::cout << std::endl;
         writeDataThroughSerialPort(data_char_vector);
 
         std::vector<char> data_received;
@@ -346,6 +354,8 @@ namespace AMR
                 std::cerr << e.what() << '\n';
             }
         }
+        std::cout << "now sleep for 2 seconds.\n";
+        sleep(2);
     }
 
 
