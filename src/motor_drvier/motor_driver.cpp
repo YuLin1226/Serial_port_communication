@@ -14,8 +14,8 @@ namespace AMR
     };
 
 
-    MotorDriver::MotorDriver(const std::string serial_port, const int baud_rate):
-    Communication::SerialPort(serial_port, baud_rate), cmd_(CMD_NUMBER::doNothing)
+    MotorDriver::MotorDriver(const std::string serial_port, const int baud_rate, std::shared_ptr<io_service> service):
+    Communication::SerialPort(serial_port, baud_rate, service), cmd_(CMD_NUMBER::doNothing)
     {
         thread_ = std::thread([this]()
         {

@@ -55,7 +55,7 @@ namespace AMR
          * @param serial_port port name, e.g. "/dev/ttyUSB0".
          * @param baud_rate baud rate, e.g. 115200.
          */
-        MotorDriver(const std::string serial_port, const int baud_rate);
+        MotorDriver(const std::string serial_port, const int baud_rate, std::shared_ptr<io_service> service);
 
         /**
          * @brief Destructor.

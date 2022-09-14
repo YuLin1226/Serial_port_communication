@@ -59,7 +59,7 @@ namespace Communication
              * @param serial_port port name, e.g. "/dev/ttyUSB0".
              * @param baud_rate baud rate, e.g. 115200.
              */
-            SerialPort(const std::string serial_port, const int baud_rate);
+            SerialPort(const std::string serial_port, const int baud_rate, std::shared_ptr<io_service> service);
 
             /**
              * @brief Virtaul destructor, classes inherit this class should customize their own destructors.

@@ -2,7 +2,8 @@
 
 namespace Communication
 {
-    SerialPort::SerialPort(const std::string serial_port, const int baud_rate)
+    SerialPort::SerialPort(const std::string serial_port, const int baud_rate, std::shared_ptr<io_service> service)
+    : service_(service)
     {
         setParam(serial_port, baud_rate);
     }
@@ -24,14 +25,14 @@ namespace Communication
         {
             return -1;
         }
-        if(service_)
-        {
-            port_.reset();
-            service_.reset();
-        }
+        // if(service_)
+        // {
+        //     port_.reset();
+        //     service_.reset();
+        // }
 
         mutex_     = std::shared_ptr<boost::mutex>{new boost::mutex};
-        service_   = std::shared_ptr<io_service>{new io_service()};
+        // service_   = std::shared_ptr<io_service>{new io_service()};
         port_      = std::shared_ptr<serial_port>{ new serial_port(*service_) };
         timeout_   = std::shared_ptr<deadline_timer>{new deadline_timer(*service_)};
 
@@ -84,7 +85,7 @@ namespace Communication
 
     std::vector<char> SerialPort::asyncReadDataThroughSerialPort(size_t data_size)
     {
-        service_->reset();
+        // service_->reset();
         data_available_ = false;
         std::vector<char> char_vector(data_size);
         try

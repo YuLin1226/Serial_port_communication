@@ -7,13 +7,15 @@
 
 int main(int argc, char **argv)
 {
+    auto service = std::make_shared<io_service>();
+
     std::string port1 = "/dev/ttyS1";
     std::string port2 = "/dev/ttyS0";
     int baud_rate = 9600;
     // Create object pointer.
     // std::shared_ptr<AMR::MotorDriver> test_node_motor = std::make_shared<AMR::MotorDriver>(argc > 1 ? argv[1] : "/dev/ttyUSB0", 115200);
-    std::shared_ptr<AMR::MotorDriver> test_node_motor1 = std::make_shared<AMR::MotorDriver>(port1, baud_rate);
-    std::shared_ptr<AMR::MotorDriver> test_node_motor2 = std::make_shared<AMR::MotorDriver>(port2, baud_rate);
+    std::shared_ptr<AMR::MotorDriver> test_node_motor1 = std::make_shared<AMR::MotorDriver>(port1, baud_rate, service);
+    std::shared_ptr<AMR::MotorDriver> test_node_motor2 = std::make_shared<AMR::MotorDriver>(port2, baud_rate, service);
 
     uint8_t id1 = 0x01;
     uint8_t id2 = 0x02;
