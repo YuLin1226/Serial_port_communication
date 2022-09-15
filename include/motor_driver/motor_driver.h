@@ -11,6 +11,16 @@ namespace AMR
 {
     class MotorDriver : public Communication::SerialPort
     {
+    public:
+        enum class CMD_NUMBER
+            {
+                doNothing,
+                enableServo,
+                velocityControl,
+                positionControl,
+                readEncoder
+            };
+
     private:
 
         const uint8_t example_broadcast_       = 0x00;
@@ -33,21 +43,16 @@ namespace AMR
 
         std::vector<char> write_data_vector_;
         std::vector<char> read_data_vector_;
+        CMD_NUMBER cmd_;
         
 
     public:
 
         void printReadBuf();
 
-        enum class CMD_NUMBER
-        {
-            doNothing,
-            enableServo,
-            velocityControl,
-            positionControl,
-            readEncoder
-        };
-        CMD_NUMBER cmd_;
+        void setCommand(MotorDriver::CMD_NUMBER cmd);
+
+        CMD_NUMBER getCommand();
 
 
         /**

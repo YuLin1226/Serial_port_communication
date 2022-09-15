@@ -34,17 +34,16 @@ namespace AMR
         while(getRunning())
         {
             
-            if(cmd_ == CMD_NUMBER::doNothing)
+            if(getCommand() == CMD_NUMBER::doNothing)
             {
             }
-            else if(cmd_ == CMD_NUMBER::enableServo)
+            else if(getCommand() == CMD_NUMBER::enableServo)
             {
                 std::lock_guard<std::mutex> lock(mtx_);
                 if(!write_data_vector_.empty())
                 {
                     writeDataThroughSerialPort(write_data_vector_);
                     write_data_vector_.clear();
-                    // std::this_thread::sleep_for(std::chrono::microseconds(Communication::RESPONSE_DELAY_US));
                     try
                     {
                         const int expected_bytes = 9;
@@ -60,31 +59,31 @@ namespace AMR
                     {
                         std::cerr << e.what() << '\n';
                     }
-                    cmd_ = CMD_NUMBER::doNothing;
+                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                    setCommand(CMD_NUMBER::doNothing);
                 }
                 else
                 {
                     std::cout << "empty write data vector.\n";
                 }
             }
-            else if(cmd_ == CMD_NUMBER::velocityControl)
+            else if(getCommand() == CMD_NUMBER::velocityControl)
             {
                 std::lock_guard<std::mutex> lock(mtx_);
                 writeDataThroughSerialPort(write_data_vector_);
             }
-            else if(cmd_ == CMD_NUMBER::positionControl)
+            else if(getCommand() == CMD_NUMBER::positionControl)
             {
                 std::lock_guard<std::mutex> lock(mtx_);
                 writeDataThroughSerialPort(write_data_vector_);
             }
-            else if(cmd_ == CMD_NUMBER::readEncoder)
+            else if(getCommand() == CMD_NUMBER::readEncoder)
             {
                 std::lock_guard<std::mutex> lock(mtx_);
                 if(!write_data_vector_.empty())
                 {
                     writeDataThroughSerialPort(write_data_vector_);
                     write_data_vector_.clear();
-                    // std::this_thread::sleep_for(std::chrono::microseconds(Communication::RESPONSE_DELAY_US));
                     try
                     {
                         const int expected_bytes = 9;
@@ -100,14 +99,14 @@ namespace AMR
                     {
                         std::cerr << e.what() << '\n';
                     }
-                    cmd_ = CMD_NUMBER::doNothing;
+                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                    setCommand(CMD_NUMBER::doNothing);
                 }
                 else
                 {
                     std::cout << "empty write data vector.\n";
                 }
             }
-            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
         std::cout << ">>> Thread body is finished" << std::endl;
     }
@@ -127,6 +126,18 @@ namespace AMR
             }
             std::cout << std::endl;
         }
+    }
+
+    void MotorDriver::setCommand(MotorDriver::CMD_NUMBER cmd)
+    {
+        std::lock_guard<std::mutex> lock(mtx_);
+        cmd_ = cmd;
+    }
+
+    MotorDriver::CMD_NUMBER MotorDriver::getCommand()
+    {
+        std::lock_guard<std::mutex> lock(mtx_);
+        return cmd_;
     }
 
     void MotorDriver::setRunning(bool running)
@@ -239,7 +250,7 @@ namespace AMR
 
     void MotorDriver::enableMotorDriver(uint8_t id)
     {
-        if(cmd_ == CMD_NUMBER::doNothing)
+        if(getCommand() == CMD_NUMBER::doNothing)
         {
             std::vector<uint8_t> data_uint8_vector;
             data_uint8_vector.clear();
@@ -268,7 +279,7 @@ namespace AMR
             }
             std::cout << std::endl;
 
-            cmd_ = CMD_NUMBER::enableServo;
+            setCommand(CMD_NUMBER::enableServo);
         }
     }
 
@@ -413,7 +424,7 @@ namespace AMR
     void MotorDriver::readEncoder(uint8_t id)
     {
 
-        if(cmd_ == CMD_NUMBER::doNothing)
+        if(getCommand() == CMD_NUMBER::doNothing)
         {
             std::vector<uint8_t> data_uint8_vector;
 
@@ -439,7 +450,7 @@ namespace AMR
             }
             std::cout << std::endl;
 
-            cmd_ = CMD_NUMBER::readEncoder;
+            setCommand(CMD_NUMBER::readEncoder);
         }
 
 
