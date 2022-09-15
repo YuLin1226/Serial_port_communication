@@ -33,6 +33,7 @@ namespace AMR
     {
         while(getRunning())
         {
+            
             if(cmd_ == CMD_NUMBER::doNothing)
             {
             }
@@ -40,19 +41,16 @@ namespace AMR
             {
                 std::lock_guard<std::mutex> lock(mtx_);
                 writeDataThroughSerialPort(write_data_vector_);
-                std::this_thread::sleep_for(std::chrono::seconds(1));
             }
             else if(cmd_ == CMD_NUMBER::velocityControl)
             {
                 std::lock_guard<std::mutex> lock(mtx_);
                 writeDataThroughSerialPort(write_data_vector_);
-                std::this_thread::sleep_for(std::chrono::seconds(1));
             }
             else if(cmd_ == CMD_NUMBER::positionControl)
             {
                 std::lock_guard<std::mutex> lock(mtx_);
                 writeDataThroughSerialPort(write_data_vector_);
-                std::this_thread::sleep_for(std::chrono::seconds(1));
             }
             else if(cmd_ == CMD_NUMBER::readEncoder)
             {
@@ -77,15 +75,14 @@ namespace AMR
                     {
                         std::cerr << e.what() << '\n';
                     }
+                    cmd_ = CMD_NUMBER::doNothing;
                 }
                 else
                 {
                     std::cout << "empty write data vector.\n";
                 }
-                std::this_thread::sleep_for(std::chrono::seconds(2));
             }
-            
-            cmd_ = CMD_NUMBER::doNothing;
+            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
         std::cout << ">>> Thread body is finished" << std::endl;
     }
