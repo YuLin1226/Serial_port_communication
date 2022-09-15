@@ -40,7 +40,32 @@ namespace AMR
             else if(cmd_ == CMD_NUMBER::enableServo)
             {
                 std::lock_guard<std::mutex> lock(mtx_);
-                writeDataThroughSerialPort(write_data_vector_);
+                if(!write_data_vector_.empty())
+                {
+                    writeDataThroughSerialPort(write_data_vector_);
+                    write_data_vector_.clear();
+                    // std::this_thread::sleep_for(std::chrono::microseconds(Communication::RESPONSE_DELAY_US));
+                    try
+                    {
+                        const int expected_bytes = 9;
+                        read_data_vector_ = asyncReadDataThroughSerialPort(expected_bytes);
+                        std::cout << "Received Data: ";
+                        for (auto i = 0; i < read_data_vector_.size(); i++)
+                        {
+                            std::cout << std::hex << (int)read_data_vector_[i] << " ";
+                        }
+                        std::cout << std::endl;
+                    }
+                    catch(const std::exception& e)
+                    {
+                        std::cerr << e.what() << '\n';
+                    }
+                    cmd_ = CMD_NUMBER::doNothing;
+                }
+                else
+                {
+                    std::cout << "empty write data vector.\n";
+                }
             }
             else if(cmd_ == CMD_NUMBER::velocityControl)
             {
@@ -214,54 +239,36 @@ namespace AMR
 
     void MotorDriver::enableMotorDriver(uint8_t id)
     {
-        std::vector<uint8_t> data_uint8_vector;
-
-        data_uint8_vector.clear();
-
-        data_uint8_vector.push_back(id);
-        data_uint8_vector.push_back(0x10);
-        data_uint8_vector.push_back(0x46);
-        data_uint8_vector.push_back(0x57);
-        data_uint8_vector.push_back(0x00);
-        data_uint8_vector.push_back(0x01);
-        data_uint8_vector.push_back(0x02);
-        data_uint8_vector.push_back(0x00);
-        data_uint8_vector.push_back(0x01);
-
-        convertUint8AndUint16 crc_code;
-        crc_code.data16 = computeCRC16(data_uint8_vector);
-        data_uint8_vector.push_back(crc_code.data8[0]);
-        data_uint8_vector.push_back(crc_code.data8[1]);
-        
-        std::vector<char> data_char_vector(data_uint8_vector.begin(), data_uint8_vector.end());
-        std::cout << "Send Command: ";
-        for (auto i = 0; i < data_char_vector.size(); i++)
+        if(cmd_ == CMD_NUMBER::doNothing)
         {
-            std::cout << std::hex << (int)data_char_vector[i] << " ";
-        }
-        std::cout << std::endl;
+            std::vector<uint8_t> data_uint8_vector;
+            data_uint8_vector.clear();
 
+            data_uint8_vector.push_back(id);
+            data_uint8_vector.push_back(0x10);
+            data_uint8_vector.push_back(0x46);
+            data_uint8_vector.push_back(0x57);
+            data_uint8_vector.push_back(0x00);
+            data_uint8_vector.push_back(0x01);
+            data_uint8_vector.push_back(0x02);
+            data_uint8_vector.push_back(0x00);
+            data_uint8_vector.push_back(0x01);
+
+            convertUint8AndUint16 crc_code;
+            crc_code.data16 = computeCRC16(data_uint8_vector);
+            data_uint8_vector.push_back(crc_code.data8[0]);
+            data_uint8_vector.push_back(crc_code.data8[1]);
         
-        writeDataThroughSerialPort(data_char_vector);
+            write_data_vector_.assign(data_uint8_vector.begin(), data_uint8_vector.end());
+            
+            std::cout << "Send Command(Enable): ";
+            for(auto i=0; i<write_data_vector_.size(); i++)
+            {
+                std::cout << std::hex << (int)write_data_vector_[i] << " ";
+            }
+            std::cout << std::endl;
 
-        std::vector<char> data_received;
-        {
-            usleep(Communication::RESPONSE_DELAY_US);
-            try
-            {
-                const int expected_bytes = 8;
-                data_received = asyncReadDataThroughSerialPort(expected_bytes);
-                std::cout << "Received Command: ";
-                for (auto i = 0; i < data_received.size(); i++)
-                {
-                    std::cout << std::hex << (int)data_received[i] << " ";
-                }
-                std::cout << std::endl;
-            }
-            catch(const std::exception& e)
-            {
-                std::cerr << e.what() << '\n';
-            }
+            cmd_ = CMD_NUMBER::enableServo;
         }
     }
 
@@ -405,31 +412,35 @@ namespace AMR
 
     void MotorDriver::readEncoder(uint8_t id)
     {
-        std::vector<uint8_t> data_uint8_vector;
 
-        data_uint8_vector.clear();
-        data_uint8_vector.push_back(id);
-        data_uint8_vector.push_back(0x03);
-        data_uint8_vector.push_back(0x42);
-        data_uint8_vector.push_back(0xFF);
-        data_uint8_vector.push_back(0x00);
-        data_uint8_vector.push_back(0x02);
-
-        convertUint8AndUint16 crc_code;
-        crc_code.data16 = computeCRC16(data_uint8_vector);
-        data_uint8_vector.push_back(crc_code.data8[0]);
-        data_uint8_vector.push_back(crc_code.data8[1]);
-    
-        write_data_vector_.assign(data_uint8_vector.begin(), data_uint8_vector.end());
-        
-        std::cout << "Send Command: ";
-        for(auto i=0; i<write_data_vector_.size(); i++)
+        if(cmd_ == CMD_NUMBER::doNothing)
         {
-            std::cout << std::hex << (int)write_data_vector_[i] << " ";
-        }
-        std::cout << std::endl;
+            std::vector<uint8_t> data_uint8_vector;
 
-        cmd_ = CMD_NUMBER::readEncoder;
+            data_uint8_vector.clear();
+            data_uint8_vector.push_back(id);
+            data_uint8_vector.push_back(0x03);
+            data_uint8_vector.push_back(0x42);
+            data_uint8_vector.push_back(0xFF);
+            data_uint8_vector.push_back(0x00);
+            data_uint8_vector.push_back(0x02);
+
+            convertUint8AndUint16 crc_code;
+            crc_code.data16 = computeCRC16(data_uint8_vector);
+            data_uint8_vector.push_back(crc_code.data8[0]);
+            data_uint8_vector.push_back(crc_code.data8[1]);
+        
+            write_data_vector_.assign(data_uint8_vector.begin(), data_uint8_vector.end());
+            
+            std::cout << "Send Command(Encoder): ";
+            for(auto i=0; i<write_data_vector_.size(); i++)
+            {
+                std::cout << std::hex << (int)write_data_vector_[i] << " ";
+            }
+            std::cout << std::endl;
+
+            cmd_ = CMD_NUMBER::readEncoder;
+        }
 
 
 

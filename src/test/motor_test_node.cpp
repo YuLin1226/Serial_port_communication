@@ -22,14 +22,16 @@ int main(int argc, char **argv)
     test_node_motor1->openSerialPort();
     test_node_motor2->openSerialPort();
 
+    for(auto i=0; i<10; i++)
+    {
+        test_node_motor1->enableMotorDriver(id1);
+        test_node_motor2->enableMotorDriver(id2);
+        test_node_motor1->readEncoder(id1);
+        test_node_motor2->readEncoder(id2);
+    }
     
-    
-    test_node_motor1->readEncoder(id1);
-    test_node_motor2->readEncoder(id2);
-    sleep(3);
-
-    test_node_motor1->printReadBuf();
-    test_node_motor2->printReadBuf();
+    // test_node_motor1->printReadBuf();
+    // test_node_motor2->printReadBuf();
 
     // Manually close serial port. Or you can alternatively let the destructor to do so.
     test_node_motor1->closeSerialPort();
