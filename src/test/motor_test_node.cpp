@@ -24,11 +24,12 @@ int main(int argc, char **argv)
 
     for(auto i=0; i<10; i++)
     {
-        test_node_motor1->enableMotorDriver(id1);
-        test_node_motor2->enableMotorDriver(id2);
+        // test_node_motor1->enableMotorDriver(id1);
+        // test_node_motor2->enableMotorDriver(id2);
         test_node_motor1->readEncoder(id1);
         test_node_motor2->readEncoder(id2);
     }
+    sleep(2);
     
     // test_node_motor1->printReadBuf();
     // test_node_motor2->printReadBuf();
