@@ -33,79 +33,81 @@ namespace AMR
     {
         while(getRunning())
         {
-            
-            if(getCommand() == CMD_NUMBER::doNothing)
+            auto cmd = getCommand();
+            if(cmd == CMD_NUMBER::doNothing)
             {
             }
-            else if(getCommand() == CMD_NUMBER::enableServo)
+            else if(cmd == CMD_NUMBER::enableServo)
             {
-                std::lock_guard<std::mutex> lock(mtx_);
-                if(!write_data_vector_.empty())
                 {
-                    writeDataThroughSerialPort(write_data_vector_);
-                    write_data_vector_.clear();
-                    try
+                    std::lock_guard<std::mutex> lock(mtx_);
+                    if(write_data_vector_.empty())
                     {
-                        const int expected_bytes = 9;
-                        read_data_vector_ = asyncReadDataThroughSerialPort(expected_bytes);
-                        std::cout << "Received Data: ";
-                        for (auto i = 0; i < read_data_vector_.size(); i++)
+                    }
+                    else
+                    {
+                        writeDataThroughSerialPort(write_data_vector_);
+                        write_data_vector_.clear();
+                        try
                         {
-                            std::cout << std::hex << (int)read_data_vector_[i] << " ";
+                            const int expected_bytes = 9;
+                            read_data_vector_ = asyncReadDataThroughSerialPort(expected_bytes);
+                            std::cout << "Received Data: ";
+                            for (auto i = 0; i < read_data_vector_.size(); i++)
+                            {
+                                std::cout << std::hex << (int)read_data_vector_[i] << " ";
+                            }
+                            std::cout << std::endl;
                         }
-                        std::cout << std::endl;
+                        catch(const std::exception& e)
+                        {
+                            std::cerr << e.what() << '\n';
+                        }
+                        std::this_thread::sleep_for(std::chrono::milliseconds(10));
                     }
-                    catch(const std::exception& e)
-                    {
-                        std::cerr << e.what() << '\n';
-                    }
-                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-                    setCommand(CMD_NUMBER::doNothing);
                 }
-                else
-                {
-                    std::cout << "empty write data vector.\n";
-                }
+                setCommand(CMD_NUMBER::doNothing);
             }
-            else if(getCommand() == CMD_NUMBER::velocityControl)
+            else if(cmd == CMD_NUMBER::velocityControl)
             {
                 std::lock_guard<std::mutex> lock(mtx_);
                 writeDataThroughSerialPort(write_data_vector_);
             }
-            else if(getCommand() == CMD_NUMBER::positionControl)
+            else if(cmd == CMD_NUMBER::positionControl)
             {
                 std::lock_guard<std::mutex> lock(mtx_);
                 writeDataThroughSerialPort(write_data_vector_);
             }
-            else if(getCommand() == CMD_NUMBER::readEncoder)
+            else if(cmd == CMD_NUMBER::readEncoder)
             {
-                std::lock_guard<std::mutex> lock(mtx_);
-                if(!write_data_vector_.empty())
                 {
-                    writeDataThroughSerialPort(write_data_vector_);
-                    write_data_vector_.clear();
-                    try
+                    std::lock_guard<std::mutex> lock(mtx_);
+                    if(write_data_vector_.empty())
                     {
-                        const int expected_bytes = 9;
-                        read_data_vector_ = asyncReadDataThroughSerialPort(expected_bytes);
-                        std::cout << "Received Data: ";
-                        for (auto i = 0; i < read_data_vector_.size(); i++)
+                    }
+                    else
+                    {
+                        writeDataThroughSerialPort(write_data_vector_);
+                        write_data_vector_.clear();
+                        try
                         {
-                            std::cout << std::hex << (int)read_data_vector_[i] << " ";
+                            const int expected_bytes = 9;
+                            read_data_vector_ = asyncReadDataThroughSerialPort(expected_bytes);
+                            std::cout << "Received Data: ";
+                            for (auto i = 0; i < read_data_vector_.size(); i++)
+                            {
+                                std::cout << std::hex << (int)read_data_vector_[i] << " ";
+                            }
+                            std::cout << std::endl;
                         }
-                        std::cout << std::endl;
+                        catch(const std::exception& e)
+                        {
+                            std::cerr << e.what() << '\n';
+                        }
+                        std::this_thread::sleep_for(std::chrono::milliseconds(10));
                     }
-                    catch(const std::exception& e)
-                    {
-                        std::cerr << e.what() << '\n';
-                    }
-                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-                    setCommand(CMD_NUMBER::doNothing);
                 }
-                else
-                {
-                    std::cout << "empty write data vector.\n";
-                }
+                setCommand(CMD_NUMBER::doNothing);
             }
         }
         std::cout << ">>> Thread body is finished" << std::endl;
